@@ -209,6 +209,7 @@ export default function AnalyticsDashboard({ user_id }: { user_id: number }) {
   useEffect(() => {
     async function fetchViews() {
       try {
+        
         const res = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/seller-analytics/${user_id}`
         );
