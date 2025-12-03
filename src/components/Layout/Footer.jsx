@@ -29,7 +29,7 @@ const Footer = () => {
         if (settings?.play_store_link && settings?.app_store_link && isLandingPage) {
             setShowDownloadLinks(true);
         } else {
-            setShowDownloadLinks(false);
+            setShowDownloadLinks(true);
         }
     }, [settings, isLandingPage]);
 
@@ -50,21 +50,22 @@ const Footer = () => {
                             <div className="social_links">
                                 {settings?.app_store_link &&
                                     <Link href={settings?.play_store_link}>
-                                        <Image src={googleDownload} alt='google' width={0} height={0} className='google' onErrorCapture={placeholderImage} />
+                                        <Image src={googleDownload} alt='google' width={235} height={85} className='google' onErrorCapture={placeholderImage} />
                                     </Link>
 
                                 }
                                 {settings?.app_store_link &&
                                     <Link href={settings?.app_store_link}>
-                                        <Image src={appleDownload} alt='apple' width={0} height={0} className='apple' onErrorCapture={placeholderImage} />
+                                        <Image src={appleDownload} alt='apple' width={235} height={85} className='apple' onErrorCapture={placeholderImage} />
                                     </Link>
                                 }
                             </div>
                             {/* </div> */}
                         </div>
+                        
                     </div>
                 ) : null}
-
+                    
                 <div className="row" id="footer_deatils">
                     <div className="col-12 col-md-6 col-lg-4 right_border">
                         <div id="footer__section">

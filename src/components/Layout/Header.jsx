@@ -381,7 +381,7 @@ const fetchSuggestionsFromAPI = debounce(async (query) => {
                     <div className="left_side">
                         <div className="nav_logo">
                             <Link href="/">
-                                <Image src={settings?.header_logo} alt='logo' width={137} height={92} className='header_logo' onErrorCapture={placeholderImage} />
+                                <Image src={settings?.header_logo} alt='logo' width={95} height={63} className='header_logo' onErrorCapture={placeholderImage} />
                             </Link>
                         </div>
 

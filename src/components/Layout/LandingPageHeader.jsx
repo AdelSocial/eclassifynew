@@ -83,7 +83,7 @@ const LandingPageHeader = () => {
                     <div className="left_side">
                         <div className="nav_logo">
                             <Link href="/home">
-                                <Image src={settings?.header_logo} alt='logo' width={137} height={92} className='header_logo' onErrorCapture={placeholderImage} />
+                                <Image src={settings?.header_logo} alt='logo' width={95} height={63} className='header_logo' onErrorCapture={placeholderImage} />
                             </Link>
                         </div>
                         <span onClick={handleShow} id="hamburg">
@@ -122,7 +122,7 @@ const LandingPageHeader = () => {
                 </div>
             </nav>
 
-            <Drawer className='eclassify_drawer' maskClosable={false} title={<Image src={settings?.header_logo} width={137} height={92} alt="Close Icon" onErrorCapture={placeholderImage} />} onClose={handleClose} open={show} closeIcon={<div className="close_icon_cont"><MdClose size={24} color="black" /></div>} >
+            <Drawer className='eclassify_drawer' maskClosable={false} title={<Image src={settings?.header_logo} width={95} height={63} alt="Close Icon" onErrorCapture={placeholderImage} />} onClose={handleClose} open={show} closeIcon={<div className="close_icon_cont"><MdClose size={24} color="black" /></div>} >
                 <ul className="mobile_nav">
                     <li className='mobile_nav_tab mob_nav_tab_active' >{t('home')}</li>
                     <li className='mobile_nav_tab' onClick={() => scrollToSection('work_process')}>{t('whyChooseUs')}</li>
