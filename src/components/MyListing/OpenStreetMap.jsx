@@ -12,7 +12,7 @@ export default function OpenStreetMap({ latitude, longitude }) {
             zoom={13}
             style={{ height: "200px", width: "100%", borderRadius: "8px" }}
         >
-            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+            <TileLayer url="https://tile.openstreetmap.org/{z}/{x}/{y}.png" attribution="&copy; OpenStreetMap" />
             <Marker position={[latitude, longitude]}>
                 <Popup>Location</Popup>
             </Marker>

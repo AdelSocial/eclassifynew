@@ -24,7 +24,7 @@ const ClassifiedPosting = () => {
             //     toast.error(res?.data?.message)
             //     router.push('/subscription')
             // }
-                   // 1️⃣ Check User Verification
+                   //   Check User Verification
                 const res = await verifyApi.checkStatus(); // your API endpoint
 
                 if (res?.data?.status !== 'approved') {
@@ -32,7 +32,7 @@ const ClassifiedPosting = () => {
                     return; // Stop here
                 }
 
-                // 2️⃣ If approved → continue existing logic
+                //  If approved → continue existing logic
                 const limitRes = await getLimitsApi.getLimits({ package_type: 'item_listing' });
 
                 if (limitRes?.data?.error === false) {
