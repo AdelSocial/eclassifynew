@@ -37,15 +37,17 @@ import HeaderCategories from './HeaderCategories';
 const ProfileDropdown = dynamic(() => import('../Profile/ProfileDropdown.jsx'))
 const MailSentSucessfully = dynamic(() => import('../Auth/MailSentSucessfully.jsx'), { ssr: false })
 const LoginModal = dynamic(() => import('../Auth/LoginModal.jsx'), { ssr: false })
+// google lense type search
+import { IoCameraOutline } from "react-icons/io5";   
+// google search
 
 const { Panel } = Collapse
 
 const Header = () => {
-const [suggestions, setSuggestions] = useState([]);
-const [isSuggestionLoading, setIsSuggestionLoading] = useState(false);
-const [showDropdown, setShowDropdown] = useState(false);
-const suggestionRef = useRef(null);
-
+    const [suggestions, setSuggestions] = useState([]);
+    const [isSuggestionLoading, setIsSuggestionLoading] = useState(false);
+    const [showDropdown, setShowDropdown] = useState(false);
+    const suggestionRef = useRef(null);
     const pathname = usePathname()
     const router = useRouter()
     const dispatch = useDispatch()
@@ -301,7 +303,25 @@ const fetchSuggestionsFromAPI = debounce(async (query) => {
     setShowDropdown(false);
   }
 };
-
+    // image search
+     const [imageFile, setImageFile] = useState(null); // ⭐ ADDED
+    const handleImageUpload = async (e) => {          // ⭐ ADDED
+        const file = e.target.files[0];
+        if (!file) return;
+        setImageFile(file);
+        const formData = new FormData();
+        formData.append("image", file);
+        setIsSuggestionLoading(true);
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/image-search`, {
+            method: "POST",
+            body: formData,
+        });
+        const data = await res.json();
+        setSuggestions(data.results.map(r => r.item.name)); 
+        setShowDropdown(true);
+        setIsSuggestionLoading(false);
+    };
+    // image search
 
     const handleSearchNav = (e) => {
         e.preventDefault()
@@ -425,18 +445,20 @@ const fetchSuggestionsFromAPI = debounce(async (query) => {
                                     ))}
                                 </Select>
                             </div>
-<form className='search_cont' onSubmit={handleSearchNav}>
-  <div className='srchIconinput_cont'>
-    <BiPlanet size={16} color='#595B6C' className='planet' />
-    <input
-      type="text"
-      placeholder={t('searchItem')}
-      onChange={(e) => handleSearch(e)}
-      value={searchQuery}
-    />
-  </div>
-  <button type='submit'><FaSearch size={14} /><span className='srch'>{t('search')}</span></button>
-</form>
+
+                                <form className='search_cont' onSubmit={handleSearchNav}>
+                                    <div className='srchIconinput_cont'>
+                                        <BiPlanet size={16} color='#595B6C' className='planet' />
+                                        <input
+                                        type="text"
+                                        placeholder={t('searchItem')}
+                                        onChange={(e) => handleSearch(e)}
+                                        value={searchQuery}
+                                        />
+                                    </div>
+                                    <button type='submit'><FaSearch size={14} /><span className='srch'>{t('search')}</span></button>
+                                </form>
+
 
                         </div>
 
@@ -484,57 +506,136 @@ const fetchSuggestionsFromAPI = debounce(async (query) => {
                                 ))}
                             </Select>
                         </div>
- <form className='search_cont' onSubmit={handleSearchNav}>
-  <div className='srchIconinput_cont' style={{ position: 'relative' }}>
-    <BiPlanet size={16} color='#595B6C' className='planet' />
-    <input
-      type="text"
-      placeholder={t('searchItem')}
-      onChange={handleSearch}
-      value={searchQuery}
-    />
+                        {/* <form className='search_cont' onSubmit={handleSearchNav}>
+                            <div className='srchIconinput_cont' style={{ position: 'relative' }}>
+                                <BiPlanet size={16} color='#595B6C' className='planet' />
+                                <input
+                                type="text"
+                                placeholder={t('searchItem')}
+                                onChange={handleSearch}
+                                value={searchQuery}
+                                />
 
-    {showDropdown && (
-      <div
-        ref={suggestionRef}
-        style={{
-          position: 'absolute',
-          top: '100%',
-          left: 0,
-          right: 0,
-          background: '#fff',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-          zIndex: 9999,
-          maxHeight: 200,
-          overflowY: 'auto',
-        }}
-      >
-        {isSuggestionLoading ? (
-          <div style={{ padding: 8, textAlign: 'center' }}><Spin /></div>
-        ) : (
-          <List
-            size="small"
-            dataSource={suggestions}
-            renderItem={(item) => (
-              <List.Item
-                key={item}
-                style={{ cursor: 'pointer' }}
-                onClick={() => {
-                  setSearchQuery(item);
-                  setShowDropdown(false);
-                }}
-              >
-                {item}
-              </List.Item>
-            )}
+                                {showDropdown && (
+                                <div
+                                    ref={suggestionRef}
+                                    style={{
+                                    position: 'absolute',
+                                    top: '100%',
+                                    left: 0,
+                                    right: 0,
+                                    background: '#fff',
+                                    boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+                                    zIndex: 9999,
+                                    maxHeight: 200,
+                                    overflowY: 'auto',
+                                    }}
+                                >
+                                    {isSuggestionLoading ? (
+                                    <div style={{ padding: 8, textAlign: 'center' }}><Spin /></div>
+                                    ) : (
+                                    <List
+                                        size="small"
+                                        dataSource={suggestions}
+                                        renderItem={(item) => (
+                                        <List.Item
+                                            key={item}
+                                            style={{ cursor: 'pointer' }}
+                                            onClick={() => {
+                                            setSearchQuery(item);
+                                            setShowDropdown(false);
+                                            }}
+                                        >
+                                            {item}
+                                        </List.Item>
+                                        )}
+                                    />
+                                    )}
+                                </div>
+                                )}
+                            </div>
+                            
+                            <button type='submit'><FaSearch size={14} /><span className='srch'>{t('search')}</span></button>
+                        </form> */}
+                                 <form className='search_cont' onSubmit={handleSearchNav}>
+      
+      <div className='srchIconinput_cont' style={{ position: 'relative' }}>
+
+        <BiPlanet size={16} color='#595B6C' className='planet' />
+
+        <input
+          type="text"
+          placeholder={t('searchItem')}
+          onChange={handleSearch}
+          value={searchQuery}
+        />
+
+        {/* ⭐ GOOGLE LENS CAMERA BUTTON ⭐ */}
+        <label 
+          style={{ 
+            position: 'absolute', 
+            right: 35, 
+            top: 10, 
+            cursor: 'pointer' 
+          }}
+        >
+          <IoCameraOutline size={18} color="#595B6C" />
+          <input
+            type="file"
+            accept="image/*"
+            style={{ display: "none" }}
+            onChange={handleImageUpload}
           />
+        </label>
+
+        {/* ⭐ DROPDOWN (unchanged) ⭐ */}
+        {showDropdown && (
+          <div
+            ref={suggestionRef}
+            style={{
+              position: "absolute",
+              top: "100%",
+              left: 0,
+              right: 0,
+              background: "#fff",
+              boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+              zIndex: 9999,
+              maxHeight: 200,
+              overflowY: "auto",
+            }}
+          >
+            {isSuggestionLoading ? (
+              <div style={{ padding: 8, textAlign: "center" }}>
+                <Spin />
+              </div>
+            ) : (
+              <List
+                size="small"
+                dataSource={suggestions}
+                renderItem={(item) => (
+                  <List.Item
+                    key={item}
+                    style={{ cursor: "pointer" }}
+                    onClick={() => {
+                      setSearchQuery(item);
+                      setShowDropdown(false);
+                    }}
+                  >
+                    {item}
+                  </List.Item>
+                )}
+              />
+            )}
+          </div>
         )}
       </div>
-    )}
-  </div>
-  <button type='submit'><FaSearch size={14} /><span className='srch'>{t('search')}</span></button>
-</form>
 
+      <button type="submit">
+        <FaSearch size={14} />
+        <span className="srch">{t("search")}</span>
+      </button>
+    </form>
+     
                     </div>
 
                     {(cityData?.city || cityData?.state || cityData?.country) ? (

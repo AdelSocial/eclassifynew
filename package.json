@@ -80,6 +80,7 @@
     "@cloudflare/next-on-pages": "^1.13.13",
     "@types/moment": "^2.13.0",
     "@types/react": "19.1.8",
+    "cross-env": "^10.1.0",
     "typescript": "5.8.3"
   }
 }
