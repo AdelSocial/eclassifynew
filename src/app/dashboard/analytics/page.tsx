@@ -21,7 +21,7 @@ export default function SellerAnalyticsPage() {
   const [userId, setUserId] = useState<number | null>(null);
 
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
+   const user = JSON.parse(localStorage.getItem('user') || '{}');
     if (user?.id) {
       setUserId(user.id);
     }
@@ -35,7 +35,7 @@ export default function SellerAnalyticsPage() {
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-4 text-center">Seller Analytics</h1>
       <AnalyticsDashboard userId={userId} proxy={false} />
-    </div>
+    </div> 
   );
 }
 

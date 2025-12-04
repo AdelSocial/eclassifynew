@@ -14,7 +14,7 @@ import axios from 'axios'
 import { getMyItemsApi } from "@/utils/api";
 import { settingsData } from '@/redux/reuducer/settingSlice'
 import { CurrentLanguageData } from '@/redux/reuducer/languageSlice'
-
+ 
 
 const EditListing = ({ id }) => {
 
@@ -408,7 +408,7 @@ const EditListing = ({ id }) => {
         }
         setActiveTab(4)
     }
-
+ 
     const handleImageSubmit = () => {
         if (uploadedImages.length === 0) {
             toast.error(t('uploadMainPicture'))

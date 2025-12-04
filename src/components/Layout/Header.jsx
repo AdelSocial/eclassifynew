@@ -304,8 +304,8 @@ const fetchSuggestionsFromAPI = debounce(async (query) => {
   }
 };
     // image search
-     const [imageFile, setImageFile] = useState(null); // ⭐ ADDED
-    const handleImageUpload = async (e) => {          // ⭐ ADDED
+     const [imageFile, setImageFile] = useState(null); // Image search
+    const handleImageUpload = async (e) => {          // Image search
         const file = e.target.files[0];
         if (!file) return;
         setImageFile(file);

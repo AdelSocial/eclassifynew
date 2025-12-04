@@ -609,7 +609,7 @@ export const getMessagesApi = {
 // add item api 
 
 export const addItemApi = {
-    addItem: ({ name, slug, description, category_id, all_category_ids, price, contact, video_link, custom_fields, image, gallery_images = [], address, latitude, longitude, custom_field_files = [], show_only_to_premium, country, state, city } = {}) => {
+    addItem: ({ name, slug, description, category_id, all_category_ids, price, contact, video_link, custom_fields, image, image_embedding, gallery_images = [], address, latitude, longitude, custom_field_files = [], show_only_to_premium, country, state, city } = {}) => {
         const formData = new FormData();
         // Append only if the value is defined and not an empty string
 
@@ -625,6 +625,8 @@ export const addItemApi = {
         if (custom_fields) formData.append('custom_fields', JSON.stringify(custom_fields));
 
         if (image) formData.append('image', image);
+        if (image_embedding) formData.append('image_embedding', image_embedding);
+        
         if (gallery_images.length > 0) {
             gallery_images.forEach((gallery_image, index) => {
                 formData.append(`gallery_images[${index}]`, gallery_image);
@@ -659,7 +661,7 @@ export const addItemApi = {
 
 // Edit item API
 export const editItemApi = {
-    editItem: ({ id, name, slug, description, category_id, all_category_ids, price, contact, video_link, custom_fields, image, gallery_images = [], address, latitude, longitude, custom_field_files = [], show_only_to_premium, country, state, city, delete_item_image_id } = {}) => {
+    editItem: ({ id, name, slug, description, category_id, all_category_ids, price, contact, video_link, custom_fields, image, image_embedding, gallery_images = [], address, latitude, longitude, custom_field_files = [], show_only_to_premium, country, state, city, delete_item_image_id } = {}) => {
         const formData = new FormData();
         // Append only if the value is defined and not an empty string
         if (id) formData.append('id', id)
@@ -682,6 +684,8 @@ export const editItemApi = {
         // if (custom_field_files) formData.append("custom_field_files", custom_field_files)
         if (city) formData.append('city', city);
         if (image != null) formData.append('image', image);
+        if (image_embedding != null) formData.append('image_embedding', image_embedding);
+        
         if (gallery_images.length > 0) {
             gallery_images.forEach((gallery_image, index) => {
                 formData.append(`gallery_images[${index}]`, gallery_image);

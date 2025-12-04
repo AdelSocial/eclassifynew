@@ -8,21 +8,48 @@ import { isLogin, placeholderImage, t } from '@/utils'
 import { FiPlusCircle } from 'react-icons/fi'
 import { getLimitsApi } from '@/utils/api'
 import toast from 'react-hot-toast'
+ import { verifyApi } from '@/api/verifyApi';
+ import { getLimitsApi } from '@/api/getLimitsApi';
+import { verifyApi } from '@/api/verifyApi';
+import { toast } from 'react-toastify';
+import { useRouter } from 'next/router';
 
 const ClassifiedPosting = () => {
     const getLimitsData = async () => {
         try {
-            const res = await getLimitsApi.getLimits({ package_type: 'item_listing' })
-            if (res?.data?.error === false) {
-                router.push('/ad-listing')
-            } else {
-                toast.error(res?.data?.message)
-                router.push('/subscription')
-            }
+            // const res = await getLimitsApi.getLimits({ package_type: 'item_listing' })
+            // if (res?.data?.error === false) {
+            //     router.push('/ad-listing')
+            // } else {
+            //     toast.error(res?.data?.message)
+            //     router.push('/subscription')
+            // }
+                   // 1️⃣ Check User Verification
+                const res = await verifyApi.checkStatus(); // your API endpoint
+
+                if (res?.data?.status !== 'approved') {
+                    router.push('https://www.libwana.com/user-verification');
+                    return; // Stop here
+                }
+
+                // 2️⃣ If approved → continue existing logic
+                const limitRes = await getLimitsApi.getLimits({ package_type: 'item_listing' });
+
+                if (limitRes?.data?.error === false) {
+                    router.push('/ad-listing');
+                } else {
+                    toast.error(limitRes?.data?.message);
+                    router.push('/subscription');
+                }
         } catch (error) {
             console.log(error)
         }
     }
+
+    // verification
+    
+    // verification
+
     const handleCheckLogin = (e) => {
         e.preventDefault()
         if (isLogin()) {
