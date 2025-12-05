@@ -93,19 +93,32 @@ const EditProfile = () => {
         }
     };
 
-    const handleToggleChange = () => {
-        setFormData((prevData) => ({
-            ...prevData,
-            notification: prevData.notification === 1 ? 0 : 1
-        }));
-    };
-    const handlePrivateChange = () => {
-        setFormData((prevData) => ({
-            ...prevData,
-            show_personal_details: prevData.show_personal_details === 1 ? 0 : 1
-        }));
-    };
+    // const handleToggleChange = () => {
+    //     setFormData((prevData) => ({
+    //         ...prevData,
+    //         notification: prevData.notification === 1 ? 0 : 1
+    //     }));
+    // };
+    // const handlePrivateChange = () => {
+    //     setFormData((prevData) => ({
+    //         ...prevData,
+    //         show_personal_details: prevData.show_personal_details === 1 ? 0 : 1
+    //     }));
+    // };
 
+    const handleToggleChange = () => {
+        setFormData(prev => ({
+            ...prev,
+            notification: prev.notification === 1 ? 0 : 1
+        }));
+        };
+
+        const handlePrivateChange = () => {
+            setFormData(prev => ({
+                ...prev,
+                show_personal_details: prev.show_personal_details === 1 ? 0 : 1
+            }));
+        }; 
     // const handleSubmit = async (e) => {
     //     setIsLoading(true)
     //     e.preventDefault();
@@ -188,20 +201,28 @@ const EditProfile = () => {
             }
 
             // ---- API CALL ----
-            const response = await updateProfileApi.updateProfile(submitData, {
-                headers: { "Content-Type": "multipart/form-data" }
+            // const response = await updateProfileApi.updateProfile(submitData, {
+            //     headers: { "Content-Type": "multipart/form-data" }
+            // });
+            const response = await updateProfileApi.updateProfile({
+                name: formData.name,
+                email: formData.email,
+                mobile: formData.phone,
+                address: formData.address,
+                profile: profileFile,
+                fcm_id: fetchFCM ? fetchFCM : "",
+                notification: formData.notification,
+                show_personal_details: formData?.show_personal_details,
+                show_personal_details: formData.show_personal_details === 1 ? true : false
             });
-
             const data = response.data;
-
-            if (data.error !== true) {
-                loadUpdateUserData(data.data);
+            if (!data.error) {
+                loadUpdateUserData(data?.data);
                 toast.success(data.message);
             } else {
                 toast.error(data.message);
             }
-
-            setIsLoading(false);
+             
 
         } catch (error) {
             console.error("Error:", error);
