@@ -379,6 +379,78 @@ const LoginModal = ({ IsLoginModalOpen, setIsRegisterModalOpen, setIsLoginModalO
         }
     }
 
+    // const verifyOTP = async (e) => {
+    //     e.preventDefault();
+
+    //     try {
+    //         if (otp === '') {
+    //             toast.error(t('otpmissing'))
+    //             return
+    //         }
+    //         setShowLoader(true)
+    //         const result = await confirmationResult.confirm(otp);
+    //         // Access user information from the result
+    //         const user = result.user;
+
+    //         try {
+    //             const response = await userSignUpApi.userSignup({
+    //                 mobile: formattedNumber,
+    //                 firebase_id: user.uid, // Accessing UID directly from the user object
+    //                 fcm_id: fetchFCM ? fetchFCM : "",
+    //                 country_code: countryCode,
+    //                 type: "phone",
+    //                 referral_code: referralCode ? referralCode : ""
+    //             });
+                
+    //             // Apply referral code if provided
+    //             if (referralCode) {
+    //                 try {
+    //                     const referralResponse = await fetch('/api/referral', {
+    //                         method: 'POST',
+    //                         headers: {
+    //                             'Content-Type': 'application/json',
+    //                         },
+    //                         body: JSON.stringify({
+    //                             user_id: user.uid,
+    //                             referral_code: referralCode,
+    //                             username: formattedNumber
+    //                         })
+    //                     });
+                        
+    //                     const referralData = await referralResponse.json();
+    //                     if (!referralData.error) {
+    //                         toast.success(referralData.message);
+    //                     } else {
+    //                         toast.error(referralData.message);
+    //                     }
+    //                 } catch (error) {
+    //                     console.error('Referral code error:', error);
+    //                     toast.error('Failed to apply referral code');
+    //                 }
+    //             }
+
+    //             const data = response.data;
+    //             loadUpdateData(data)
+    //             toast.success(data.message);
+    //             if (pathname !== '/home') {
+    //                 if (data?.data?.email === "") {
+    //                     router.push('/profile/edit-profile')
+    //                 }
+    //             }
+    //             setShowLoader(false)
+    //             OnHide();
+    //         } catch (error) {
+    //             console.error("Error:", error);
+    //             setShowLoader(false)
+    //         }
+    //         // Perform necessary actions after OTP verification, like signing in
+    //     } catch (error) {
+    //         const errorCode = error.code;
+    //         handleFirebaseAuthError(errorCode);
+    //         setShowLoader(false)
+    //     }
+    // };
+
     const verifyOTP = async (e) => {
         e.preventDefault();
 
@@ -389,40 +461,35 @@ const LoginModal = ({ IsLoginModalOpen, setIsRegisterModalOpen, setIsLoginModalO
             }
             setShowLoader(true)
             const result = await confirmationResult.confirm(otp);
-            // Access user information from the result
             const user = result.user;
 
             try {
                 const response = await userSignUpApi.userSignup({
                     mobile: formattedNumber,
-                    firebase_id: user.uid, // Accessing UID directly from the user object
+                    firebase_id: user.uid,
                     fcm_id: fetchFCM ? fetchFCM : "",
                     country_code: countryCode,
                     type: "phone",
                     referral_code: referralCode ? referralCode : ""
                 });
                 
-                // Apply referral code if provided
+                // Referral code apply
                 if (referralCode) {
                     try {
                         const referralResponse = await fetch('/api/referral', {
                             method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
+                            headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({
                                 user_id: user.uid,
                                 referral_code: referralCode,
                                 username: formattedNumber
                             })
                         });
-                        
+
                         const referralData = await referralResponse.json();
-                        if (!referralData.error) {
-                            toast.success(referralData.message);
-                        } else {
-                            toast.error(referralData.message);
-                        }
+
+                        if (!referralData.error) toast.success(referralData.message);
+                        else toast.error(referralData.message);
                     } catch (error) {
                         console.error('Referral code error:', error);
                         toast.error('Failed to apply referral code');
@@ -430,27 +497,38 @@ const LoginModal = ({ IsLoginModalOpen, setIsRegisterModalOpen, setIsLoginModalO
                 }
 
                 const data = response.data;
+
+                // ✅ SAVE USER HERE
+                // backend user data = data.data
+                localStorage.setItem("user", JSON.stringify(data.data));
+                // If backend returns token, save it too
+                if (data?.token) {
+                    localStorage.setItem("token", data.token);
+                }
+
                 loadUpdateData(data)
                 toast.success(data.message);
+
                 if (pathname !== '/home') {
                     if (data?.data?.email === "") {
                         router.push('/profile/edit-profile')
                     }
                 }
+
                 setShowLoader(false)
                 OnHide();
+
             } catch (error) {
                 console.error("Error:", error);
                 setShowLoader(false)
             }
-            // Perform necessary actions after OTP verification, like signing in
+
         } catch (error) {
             const errorCode = error.code;
             handleFirebaseAuthError(errorCode);
             setShowLoader(false)
         }
     };
-
 
     const handleLoginSubmit = (e) => {
         setShowLoader(true)

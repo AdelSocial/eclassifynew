@@ -27,7 +27,7 @@ const EditProfile = () => {
         name: UserData?.name || '',
         email: UserData?.email || '',
         phone: UserData?.mobile || '',
-        address: UserData?.address || '',
+        address: UserData?.address || '', 
         notification: UserData?.notification,
         show_personal_details: Number(UserData?.show_personal_details)
     });

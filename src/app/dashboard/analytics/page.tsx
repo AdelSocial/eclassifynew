@@ -12,30 +12,26 @@
 //   );
 // }
 
-'use client';
+'use client'; 
 
-import { useEffect, useState } from 'react';
-import AnalyticsDashboard from '../../../components/dashboard/AnalyticsDashboard';
+
+import { useEffect, useState } from "react";
+import AnalyticsDashboard from "@/components/dashboard/AnalyticsDashboard";
 
 export default function SellerAnalyticsPage() {
-  const [userId, setUserId] = useState<number | null>(null);
+  const [userId, setUserId] = useState(null);
 
   useEffect(() => {
-   const user = JSON.parse(localStorage.getItem('user') || '{}');
-    if (user?.id) {
-      setUserId(user.id);
-    }
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user) setUserId(user.id);
   }, []);
 
-  if (!userId) {
-    return <div className="p-6 text-center">Loading user...</div>;
-  }
+  if (!userId) return <div>Loading...</div>;
 
   return (
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-4 text-center">Seller Analytics</h1>
-      <AnalyticsDashboard userId={userId} proxy={false} />
-    </div> 
+      <AnalyticsDashboard userId={userId} proxy={true} />
+    </div>
   );
 }
-

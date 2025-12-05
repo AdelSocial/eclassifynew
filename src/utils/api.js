@@ -167,8 +167,12 @@ export const allItemApi = {
     },
 
     getRelatedItems: (id) => {
-        return Api.get(`/relateditems/${id}`);
+        return Api.get(`/related-items/${id}`);
     },
+
+    // getRelatedItems: (id) => {
+        //     return Api.get(`/relateditems/${id}`);
+    // },
 }
 
 // PACKAGE API
@@ -374,7 +378,7 @@ export const updateProfileApi = {
         if (mobile) formData.append('mobile', mobile);
         if (fcm_id) formData.append('fcm_id', fcm_id);
         if (address) formData.append('address', address);
-
+ 
 
         // Assuming `profile` is a file object. If it's a URL or other type, handle accordingly.
         if (profile) {

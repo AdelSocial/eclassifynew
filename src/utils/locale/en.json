@@ -156,6 +156,8 @@
   "sendMessage": "Send us a Message",
   "contactIntro": "Get in touch with us! Whether you have questions, feedback, or just want to say hello, our contact page is the gateway to reaching our team.",
   "name": "Name",
+  "sellerFllow": "Seller Follow",
+  
   "enterName": "Enter your name",
   "enterEmail": "Enter your email",
   "subject": "Subject",
@@ -211,7 +213,7 @@
   "sendOffer": "Send Offer",
   "myProfile": "My Profile",
   "personalInfo": "Personal Info",
-  "address": "Address",
+  "address": "Address", 
   "saveChanges": "Save Changes",
   "adListingPlan": "Ad Listing Plan",
   "featuredAdPlan": "Featured Ad Plan",

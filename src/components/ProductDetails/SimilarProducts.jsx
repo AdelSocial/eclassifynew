@@ -50,12 +50,9 @@ const SimilarProducts = ({ productData }) => {
     const fetchSimilarData = async (id) => {
         try {
             const response = await allItemApi.getRelatedItems(id);
-
             const related = response.data.related_items || [];
-
             // Remove current item
             const filtered = related.filter(item => item.id !== productData?.id);
-
             setSimilarData(filtered);
 
         } catch (error) {
@@ -86,14 +83,11 @@ const SimilarProducts = ({ productData }) => {
         setIsBeginning(swiperRef?.current?.isBeginning);
     };
 
-
     useEffect(() => {
         if (swiperRef && swiperRef?.current) {
             swiperRef?.current?.changeLanguageDirection(isRtl ? 'rtl' : 'ltr');
         }
     }, [isRtl]);
-
-
     const breakpoints = {
         0: {
             slidesPerView: 2,

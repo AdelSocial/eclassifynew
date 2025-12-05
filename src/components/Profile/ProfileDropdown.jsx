@@ -27,7 +27,7 @@ const ProfileDropdown = ({ closeDrawer, settings, handleLogout, isDrawer }) => {
                 <div className="profDropIconCont">
                     <span><FiUser size={16} /></span>
                     <span>{t('myProfile')}</span>
-                </div>
+                </div> 
             )
         },
         {
