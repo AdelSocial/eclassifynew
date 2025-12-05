@@ -368,29 +368,83 @@ export const sendVerificationReqApi = {
         });
     },
 }
+// export const updateProfileApi = {
+//     updateProfile: ({ name, email, mobile, fcm_id, address, profile, notification, show_personal_details } = {}) => {
+//         const formData = new FormData();
+
+//         // Append only if the value is defined and not an empty string
+//         if (name) formData.append('name', name);
+//         if (email) formData.append('email', email);
+//         if (mobile) formData.append('mobile', mobile);
+//         if (fcm_id) formData.append('fcm_id', fcm_id);
+//         if (address) formData.append('address', address);
+ 
+
+//         // Assuming `profile` is a file object. If it's a URL or other type, handle accordingly.
+//         if (profile) {
+//             formData.append('profile', profile);
+//         }
+//         formData.append('notification', notification);
+//         formData.append('show_personal_details', show_personal_details);
+
+//         return Api.post(UPDATE_PROFILE, formData, {
+//             headers: {
+//                 'Content-Type': 'multipart/form-data'
+//             }
+//         });
+//     },
+// }
+
 export const updateProfileApi = {
-    updateProfile: ({ name, email, mobile, fcm_id, address, profile, notification, show_personal_details } = {}) => {
+    updateProfile: ({
+        name,
+        email,
+        mobile,
+        fcm_id,
+        address,
+        profile,
+        notification,
+        show_personal_details,
+        opening_time,
+        closing_time,
+        facebook,
+        twitter,
+        instagram,
+        youtube,
+        gallery_images = []
+    } = {}) => {
+
         const formData = new FormData();
 
-        // Append only if the value is defined and not an empty string
         if (name) formData.append('name', name);
         if (email) formData.append('email', email);
         if (mobile) formData.append('mobile', mobile);
         if (fcm_id) formData.append('fcm_id', fcm_id);
         if (address) formData.append('address', address);
- 
 
-        // Assuming `profile` is a file object. If it's a URL or other type, handle accordingly.
-        if (profile) {
-            formData.append('profile', profile);
+        if (profile) formData.append('profile', profile);
+
+        // New seller fields
+        if (opening_time) formData.append('opening_time', opening_time);
+        if (closing_time) formData.append('closing_time', closing_time);
+
+        if (facebook) formData.append('facebook', facebook);
+        if (twitter) formData.append('twitter', twitter);
+        if (instagram) formData.append('instagram', instagram);
+        if (youtube) formData.append('youtube', youtube);
+
+        // Multiple images (gallery slider)
+        if (gallery_images.length > 0) {
+            gallery_images.forEach((img, index) => {
+                formData.append(`gallery_images[${index}]`, img);
+            });
         }
+
         formData.append('notification', notification);
         formData.append('show_personal_details', show_personal_details);
 
         return Api.post(UPDATE_PROFILE, formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data'
-            }
+            headers: { 'Content-Type': 'multipart/form-data' }
         });
     },
 }

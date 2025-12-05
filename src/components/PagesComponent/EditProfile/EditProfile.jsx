@@ -29,15 +29,22 @@ const EditProfile = () => {
         phone: UserData?.mobile || '',
         address: UserData?.address || '', 
         notification: UserData?.notification,
-        show_personal_details: Number(UserData?.show_personal_details)
+        show_personal_details: Number(UserData?.show_personal_details),
+
+        // NEW FIELDS
+        store_hours: UserData?.store_hours ? JSON.parse(UserData.store_hours) : {},
+        facebook: UserData?.facebook || '',
+        twitter: UserData?.twitter || '',
+        instagram: UserData?.instagram || '',
+        youtube: UserData?.youtube || '',
+        slider_images: []   // multiple upload
+        
     });
     const [profileImage, setProfileImage] = useState(UserData?.profile || user);
     const [isLoading, setIsLoading] = useState(false);
     const [profileFile, setProfileFile] = useState(null);
     const [VerificationStatus, setVerificationStatus] = useState('')
     const [RejectionReason, setRejectionReason] = useState('')
-
-    
 
     const getVerificationProgress = async () => {
 
@@ -99,40 +106,106 @@ const EditProfile = () => {
         }));
     };
 
+    // const handleSubmit = async (e) => {
+    //     setIsLoading(true)
+    //     e.preventDefault();
+
+    //     try {
+    //         if (formData?.name == '' || formData?.address == '' || formData?.profileFile == '') {
+    //             toast.error(t("emptyFieldNotAllowed"));
+    //             setIsLoading(false)
+    //             return
+    //         }
+    //         const response = await updateProfileApi.updateProfile({
+    //             name: formData.name,
+    //             email: formData.email,
+    //             mobile: formData.phone,
+    //             address: formData.address,
+    //             profile: profileFile,
+    //             fcm_id: fetchFCM ? fetchFCM : "",
+    //             notification: formData.notification,
+    //             show_personal_details: formData?.show_personal_details
+    //         });
+
+    //         const data = response.data;
+    //         if (data.error !== true) {
+    //             loadUpdateUserData(data?.data);
+    //             toast.success(data.message);
+    //             setIsLoading(false)
+
+    //         } else {
+    //             toast.error(data.message)
+    //             setIsLoading(false)
+
+    //         }
+    //     } catch (error) {
+    //         console.error("Error:", error);
+    //     }
+    // };
     const handleSubmit = async (e) => {
-        setIsLoading(true)
         e.preventDefault();
+        setIsLoading(true);
 
         try {
-            if (formData?.name == '' || formData?.address == '' || formData?.profileFile == '') {
+            if (!formData.name || !formData.address) {
                 toast.error(t("emptyFieldNotAllowed"));
-                setIsLoading(false)
-                return
+                setIsLoading(false);
+                return;
             }
-            const response = await updateProfileApi.updateProfile({
-                name: formData.name,
-                email: formData.email,
-                mobile: formData.phone,
-                address: formData.address,
-                profile: profileFile,
-                fcm_id: fetchFCM ? fetchFCM : "",
-                notification: formData.notification,
-                show_personal_details: formData?.show_personal_details
+
+            // ---- BUILD FORM DATA ----
+            const submitData = new FormData();
+
+            submitData.append("name", formData.name);
+            submitData.append("email", formData.email);
+            submitData.append("mobile", formData.phone);
+            submitData.append("address", formData.address);
+            submitData.append("fcm_id", fetchFCM ? fetchFCM : "");
+            submitData.append("notification", formData.notification);
+            submitData.append("show_personal_details", formData.show_personal_details);
+
+            // ---- PROFILE IMAGE ----
+            if (profileFile) {
+                submitData.append("profile", profileFile);
+            }
+
+            // ---- STORE HOURS JSON ----
+            if (formData.store_hours) {
+                submitData.append("store_hours", JSON.stringify(formData.store_hours));
+            }
+
+            // ---- SOCIAL MEDIA ----
+            submitData.append("facebook", formData.facebook || "");
+            submitData.append("twitter", formData.twitter || "");
+            submitData.append("instagram", formData.instagram || "");
+            submitData.append("youtube", formData.youtube || "");
+
+            // ---- SLIDER IMAGES (MULTIPLE) ----
+            if (formData.slider_images && formData.slider_images.length > 0) {
+                Array.from(formData.slider_images).forEach((file) => {
+                    submitData.append("slider_images[]", file);
+                });
+            }
+
+            // ---- API CALL ----
+            const response = await updateProfileApi.updateProfile(submitData, {
+                headers: { "Content-Type": "multipart/form-data" }
             });
 
             const data = response.data;
+
             if (data.error !== true) {
-                loadUpdateUserData(data?.data);
+                loadUpdateUserData(data.data);
                 toast.success(data.message);
-                setIsLoading(false)
-
             } else {
-                toast.error(data.message)
-                setIsLoading(false)
-
+                toast.error(data.message);
             }
+
+            setIsLoading(false);
+
         } catch (error) {
             console.error("Error:", error);
+            setIsLoading(false);
         }
     };
 
@@ -255,6 +328,75 @@ const EditProfile = () => {
                                         </div>
                                     </div>
                                 </div>
+                                {/* Custom profile */}c<div className="store_hours_section">
+                                    <h5 className="personal_info_text">Store Hours</h5>
+
+                                    {[
+                                        "Monday", "Tuesday", "Wednesday", "Thursday", 
+                                        "Friday", "Saturday", "Sunday"
+                                    ].map((day) => (
+                                        <div key={day} className="hours-row">
+                                            <label>{day}</label>
+                                            <input 
+                                                type="text"
+                                                placeholder="10am - 6pm or Closed"
+                                                value={formData.store_hours?.[day] || ""}
+                                                onChange={(e) =>
+                                                    setFormData({
+                                                        ...formData,
+                                                        store_hours: {
+                                                            ...formData.store_hours,
+                                                            [day]: e.target.value
+                                                        }
+                                                    })
+                                                }
+                                            />
+                                        </div>
+                                    ))}
+                                </div>
+                                <div className="social_media_section">
+                                    <h5 className="personal_info_text">Social Media Links</h5>
+
+                                    {["facebook", "twitter", "instagram", "youtube"].map((platform) => (
+                                        <div className='auth_in_cont' key={platform}>
+                                            <label className='auth_label'>{platform.toUpperCase()}</label>
+                                            <input 
+                                                type="text"
+                                                id={platform}
+                                                className='auth_input personal_info_input'
+                                                value={formData[platform] || ""}
+                                                onChange={handleChange}
+                                            />
+                                        </div>
+                                    ))}
+                                </div>
+                                <div className="slider_images_section">
+                                <h5 className="personal_info_text">Seller Image Slider</h5>
+
+                                <input
+                                    type="file"
+                                    multiple
+                                    accept="image/*"
+                                    onChange={(e) => setFormData({
+                                        ...formData,
+                                        slider_images: [...e.target.files]
+                                    })}
+                                />
+
+                                <div className="preview_slider">
+                                    {formData.slider_images?.length > 0 &&
+                                        Array.from(formData.slider_images).map((file, index) => (
+                                            <img 
+                                                key={index} 
+                                                src={URL.createObjectURL(file)} 
+                                                width={80} 
+                                                height={80}
+                                                className="slider_thumb"
+                                            />
+                                        ))}
+                                </div>
+                            </div>
+                                {/* end custom profile */}
  
                                 {isLoading ? (
                                     <button className="sv_chng_btn">
