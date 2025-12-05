@@ -349,7 +349,8 @@ const EditProfile = () => {
                                         </div>
                                     </div>
                                 </div>
-                                {/* Custom profile */}c<div className="store_hours_section">
+                                {/* Custom profile */}
+                                <div className="store_hours_section">
                                     <h5 className="personal_info_text">Store Hours</h5>
 
                                     {[
