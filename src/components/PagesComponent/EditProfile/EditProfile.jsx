@@ -129,10 +129,8 @@ const EditProfile = () => {
                 notification: formData.notification,
                 show_personal_details: formData?.show_personal_details,
                // NEW: store hours
-                store_hours: JSON.stringify({
-                    open: formData.store_hours?.open,
-                    close: formData.store_hours?.close
-                }),
+                 
+                store_hours: formData.store_hours,
 
                 // NEW: social media
                 facebook: formData.facebook || "",
