@@ -368,83 +368,54 @@ export const sendVerificationReqApi = {
         });
     },
 }
-// export const updateProfileApi = {
-//     updateProfile: ({ name, email, mobile, fcm_id, address, profile, notification, show_personal_details } = {}) => {
-//         const formData = new FormData();
-
-//         // Append only if the value is defined and not an empty string
-//         if (name) formData.append('name', name);
-//         if (email) formData.append('email', email);
-//         if (mobile) formData.append('mobile', mobile);
-//         if (fcm_id) formData.append('fcm_id', fcm_id);
-//         if (address) formData.append('address', address);
- 
-
-//         // Assuming `profile` is a file object. If it's a URL or other type, handle accordingly.
-//         if (profile) {
-//             formData.append('profile', profile);
-//         }
-//         formData.append('notification', notification);
-//         formData.append('show_personal_details', show_personal_details);
-
-//         return Api.post(UPDATE_PROFILE, formData, {
-//             headers: {
-//                 'Content-Type': 'multipart/form-data'
-//             }
-//         });
-//     },
-// }
-
 export const updateProfileApi = {
-    updateProfile: ({
-        name,
-        email,
-        mobile,
-        fcm_id,
-        address,
-        profile,
-        notification,
-        show_personal_details,
-        opening_time,
-        closing_time,
+    updateProfile: ({ name, email, mobile, fcm_id, address, profile, notification, show_personal_details,
+        // NEW FIELDS
+        store_hours,
         facebook,
         twitter,
         instagram,
         youtube,
-        gallery_images = []
-    } = {}) => {
-
+        slider_images = []
+     } = {}) => {
         const formData = new FormData();
 
+        // Append only if the value is defined and not an empty string
         if (name) formData.append('name', name);
         if (email) formData.append('email', email);
         if (mobile) formData.append('mobile', mobile);
         if (fcm_id) formData.append('fcm_id', fcm_id);
         if (address) formData.append('address', address);
+        
 
-        if (profile) formData.append('profile', profile);
+        // Assuming `profile` is a file object. If it's a URL or other type, handle accordingly.
+        if (profile) {
+            formData.append('profile', profile);
+        }
+        formData.append('notification', notification);
+        formData.append('show_personal_details', show_personal_details);
+        // NEW: STORE HOURS (must be string)
+        if (store_hours) {
+            formData.append("store_hours", JSON.stringify(store_hours));
+        }
 
-        // New seller fields
-        if (opening_time) formData.append('opening_time', opening_time);
-        if (closing_time) formData.append('closing_time', closing_time);
+        // NEW: SOCIAL MEDIA LINKS
+        if (facebook) formData.append("facebook", facebook);
+        if (twitter) formData.append("twitter", twitter);
+        if (instagram) formData.append("instagram", instagram);
+        if (youtube) formData.append("youtube", youtube);
 
-        if (facebook) formData.append('facebook', facebook);
-        if (twitter) formData.append('twitter', twitter);
-        if (instagram) formData.append('instagram', instagram);
-        if (youtube) formData.append('youtube', youtube);
-
-        // Multiple images (gallery slider)
-        if (gallery_images.length > 0) {
-            gallery_images.forEach((img, index) => {
-                formData.append(`gallery_images[${index}]`, img);
+        // NEW: MULTIPLE SLIDER IMAGES
+        if (slider_images && slider_images.length > 0) {
+            slider_images.forEach((file, index) => {
+                formData.append(`slider_images[]`, file);
             });
         }
 
-        formData.append('notification', notification);
-        formData.append('show_personal_details', show_personal_details);
-
         return Api.post(UPDATE_PROFILE, formData, {
-            headers: { 'Content-Type': 'multipart/form-data' }
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
         });
     },
 }

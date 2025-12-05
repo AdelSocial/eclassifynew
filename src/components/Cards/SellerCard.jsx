@@ -14,9 +14,6 @@
 // import { settingsData } from "@/redux/reuducer/settingSlice"
 // import BusinessQRCode from "@/components/QRCode/BusinessQRCode"
 
-
-
-
 // const SellerCard = ({ seller, ratings }) => {
 
 //     const path = usePathname()
@@ -117,8 +114,11 @@
 //                     </div>
 //                 }
 
+
 //                 <div className="seller_name_img_cont">
 //                     <Image src={seller?.profile || placeholder_image} width={120} height={120} className="seller_img" alt="seller image" onErrorCapture={placeholderImage} />
+
+
 
 //                     <div className="seller_name_rating_cont">
 //                         <p className="seller_name">{seller?.name}</p>

@@ -15,6 +15,9 @@ import BreadcrumbComponent from "@/components/Breadcrumb/BreadcrumbComponent"
 import { CurrentLanguageData } from "@/redux/reuducer/languageSlice";
 import { useRouter } from "next/navigation";
 
+const days = [
+  "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"
+];
 const EditProfile = () => {
     // const User = store.getState().UserSignup
 
@@ -93,117 +96,29 @@ const EditProfile = () => {
         }
     };
 
-    // const handleToggleChange = () => {
-    //     setFormData((prevData) => ({
-    //         ...prevData,
-    //         notification: prevData.notification === 1 ? 0 : 1
-    //     }));
-    // };
-    // const handlePrivateChange = () => {
-    //     setFormData((prevData) => ({
-    //         ...prevData,
-    //         show_personal_details: prevData.show_personal_details === 1 ? 0 : 1
-    //     }));
-    // };
-
     const handleToggleChange = () => {
-        setFormData(prev => ({
-            ...prev,
-            notification: prev.notification === 1 ? 0 : 1
+        setFormData((prevData) => ({
+            ...prevData,
+            notification: prevData.notification === 1 ? 0 : 1
         }));
-        };
+    };
+    const handlePrivateChange = () => {
+        setFormData((prevData) => ({
+            ...prevData,
+            show_personal_details: prevData.show_personal_details === 1 ? 0 : 1
+        }));
+    };
 
-        const handlePrivateChange = () => {
-            setFormData(prev => ({
-                ...prev,
-                show_personal_details: prev.show_personal_details === 1 ? 0 : 1
-            }));
-        }; 
-    // const handleSubmit = async (e) => {
-    //     setIsLoading(true)
-    //     e.preventDefault();
-
-    //     try {
-    //         if (formData?.name == '' || formData?.address == '' || formData?.profileFile == '') {
-    //             toast.error(t("emptyFieldNotAllowed"));
-    //             setIsLoading(false)
-    //             return
-    //         }
-    //         const response = await updateProfileApi.updateProfile({
-    //             name: formData.name,
-    //             email: formData.email,
-    //             mobile: formData.phone,
-    //             address: formData.address,
-    //             profile: profileFile,
-    //             fcm_id: fetchFCM ? fetchFCM : "",
-    //             notification: formData.notification,
-    //             show_personal_details: formData?.show_personal_details
-    //         });
-
-    //         const data = response.data;
-    //         if (data.error !== true) {
-    //             loadUpdateUserData(data?.data);
-    //             toast.success(data.message);
-    //             setIsLoading(false)
-
-    //         } else {
-    //             toast.error(data.message)
-    //             setIsLoading(false)
-
-    //         }
-    //     } catch (error) {
-    //         console.error("Error:", error);
-    //     }
-    // };
     const handleSubmit = async (e) => {
+        setIsLoading(true)
         e.preventDefault();
-        setIsLoading(true);
 
         try {
-            if (!formData.name || !formData.address) {
+            if (formData?.name == '' || formData?.address == '' || formData?.profileFile == '') {
                 toast.error(t("emptyFieldNotAllowed"));
-                setIsLoading(false);
-                return;
+                setIsLoading(false)
+                return
             }
-
-            // ---- BUILD FORM DATA ----
-            const submitData = new FormData();
-
-            submitData.append("name", formData.name);
-            submitData.append("email", formData.email);
-            submitData.append("mobile", formData.phone);
-            submitData.append("address", formData.address);
-            submitData.append("fcm_id", fetchFCM ? fetchFCM : "");
-            submitData.append("notification", formData.notification);
-            submitData.append("show_personal_details", formData.show_personal_details);
-
-            // ---- PROFILE IMAGE ----
-            if (profileFile) {
-                submitData.append("profile", profileFile);
-            }
-
-            // ---- STORE HOURS JSON ----
-            if (formData.store_hours) {
-                submitData.append("store_hours", JSON.stringify(formData.store_hours));
-            }
-
-            // ---- SOCIAL MEDIA ----
-            submitData.append("facebook", formData.facebook || "");
-            submitData.append("twitter", formData.twitter || "");
-            submitData.append("instagram", formData.instagram || "");
-            submitData.append("youtube", formData.youtube || "");
-
-            // ---- SLIDER IMAGES (MULTIPLE) ----
-            if (formData.slider_images && formData.slider_images.length > 0) {
-                Array.from(formData.slider_images).forEach((file) => {
-                    submitData.append("slider_images[]", file);
-                });
-            }
-
-            // ---- API CALL ----
-            // const response = await updateProfileApi.updateProfile(submitData, {
-            //     headers: { "Content-Type": "multipart/form-data" }
-            // });
             const response = await updateProfileApi.updateProfile({
                 name: formData.name,
                 email: formData.email,
@@ -213,22 +128,105 @@ const EditProfile = () => {
                 fcm_id: fetchFCM ? fetchFCM : "",
                 notification: formData.notification,
                 show_personal_details: formData?.show_personal_details,
-                show_personal_details: formData.show_personal_details === 1 ? true : false
+               // NEW: store hours
+                store_hours: JSON.stringify({
+                    open: formData.store_hours?.open,
+                    close: formData.store_hours?.close
+                }),
+
+                // NEW: social media
+                facebook: formData.facebook || "",
+                twitter: formData.twitter || "",
+                instagram: formData.instagram || "",
+                youtube: formData.youtube || "",
+
+                // NEW: Image slider (Base64 array or file array)
+                slider_images: formData.slider_images ?? []
+                
+
             });
+
             const data = response.data;
-            if (!data.error) {
+            if (data.error !== true) {
                 loadUpdateUserData(data?.data);
                 toast.success(data.message);
-            } else {
-                toast.error(data.message);
-            }
-             
+                setIsLoading(false)
 
+            } else {
+                toast.error(data.message)
+                setIsLoading(false)
+
+            }
         } catch (error) {
             console.error("Error:", error);
-            setIsLoading(false);
         }
     };
+    // const handleSubmit = async (e) => {
+    //     e.preventDefault();
+    //     setIsLoading(true);
+
+    //     try {
+    //         if (!formData.name || !formData.address) {
+    //             toast.error(t("emptyFieldNotAllowed"));
+    //             setIsLoading(false);
+    //             return;
+    //         }
+
+    //         // ---- BUILD FORM DATA ----
+    //         const submitData = new FormData();
+
+    //         submitData.append("name", formData.name);
+    //         submitData.append("email", formData.email);
+    //         submitData.append("mobile", formData.phone);
+    //         submitData.append("address", formData.address);
+    //         submitData.append("fcm_id", fetchFCM ? fetchFCM : "");
+    //         submitData.append("notification", formData.notification);
+    //         submitData.append("show_personal_details", formData.show_personal_details);
+
+    //         // ---- PROFILE IMAGE ----
+    //         if (profileFile) {
+    //             submitData.append("profile", profileFile);
+    //         }
+
+    //         // ---- STORE HOURS JSON ----
+    //         if (formData.store_hours) {
+    //             submitData.append("store_hours", JSON.stringify(formData.store_hours));
+    //         }
+
+    //         // ---- SOCIAL MEDIA ----
+    //         submitData.append("facebook", formData.facebook || "");
+    //         submitData.append("twitter", formData.twitter || "");
+    //         submitData.append("instagram", formData.instagram || "");
+    //         submitData.append("youtube", formData.youtube || "");
+
+    //         // ---- SLIDER IMAGES (MULTIPLE) ----
+    //         if (formData.slider_images && formData.slider_images.length > 0) {
+    //             Array.from(formData.slider_images).forEach((file) => {
+    //                 submitData.append("slider_images[]", file);
+    //             });
+    //         }
+
+    //         // ---- API CALL ----
+    //         const response = await updateProfileApi.updateProfile(submitData, {
+    //             headers: { "Content-Type": "multipart/form-data" }
+    //         });
+
+    //         const data = response.data;
+
+    //         if (data.error !== true) {
+    //             loadUpdateUserData(data.data);
+    //             toast.success(data.message);
+    //         } else {
+    //             toast.error(data.message);
+    //         }
+
+    //         setIsLoading(false);
+
+    //     } catch (error) {
+    //         console.error("Error:", error);
+    //         setIsLoading(false);
+    //     }
+    // };
 
     const handleVerfiyNow = () => {
         router.push('/user-verification')
@@ -396,14 +394,15 @@ const EditProfile = () => {
                                 <h5 className="personal_info_text">Seller Image Slider</h5>
 
                                 <input
-                                    type="file"
-                                    multiple
-                                    accept="image/*"
-                                    onChange={(e) => setFormData({
-                                        ...formData,
-                                        slider_images: [...e.target.files]
-                                    })}
-                                />
+                                        type="file"
+                                        multiple
+                                        onChange={(e) => {
+                                            setFormData({
+                                                ...formData,
+                                                slider_images: [...e.target.files] // OR convert to Base64
+                                            });
+                                        }}
+                                    />
 
                                 <div className="preview_slider">
                                     {formData.slider_images?.length > 0 &&
