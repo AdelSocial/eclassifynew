@@ -255,7 +255,7 @@ const EditProfile = () => {
                                         </div>
                                     </div>
                                 </div>
-
+ 
                                 {isLoading ? (
                                     <button className="sv_chng_btn">
                                         <div className="loader-container-otp">

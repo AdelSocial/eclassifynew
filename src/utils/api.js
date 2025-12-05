@@ -166,8 +166,8 @@ export const allItemApi = {
         })
     },
 
-    getRelatedItems: (id) => {
-        return Api.get(`/related-items/${id}`);
+    getRelatedItems: (slug) => {
+        return Api.get(`/related-items/${slug}`);
     },
 
     // getRelatedItems: (id) => {

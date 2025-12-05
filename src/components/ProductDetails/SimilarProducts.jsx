@@ -47,18 +47,18 @@ const SimilarProducts = ({ productData }) => {
     //     }
     // }
 
-    const fetchSimilarData = async (id) => {
-        try {
-            const response = await allItemApi.getRelatedItems(id);
-            const related = response.data.related_items || [];
-            // Remove current item
-            const filtered = related.filter(item => item.id !== productData?.id);
-            setSimilarData(filtered);
+   const fetchSimilarData = async (slug) => {
+    try {
+        const response = await allItemApi.getRelatedItems(slug);
+        // API returns ARRAY, not object
+        const related = response.data || [];
+        const filtered = related.filter(item => item.id !== productData?.id);
+        setSimilarData(filtered);
 
-        } catch (error) {
-            console.error("Error:", error);
-        }
+    } catch (error) {
+        console.error(error);
     }
+}
     // useEffect(() => {
     //     if (productData?.category_id) {
     //         fetchSimilarData(productData?.category_id)
