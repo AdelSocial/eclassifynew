@@ -23,12 +23,14 @@ import { CurrentLanguageData } from "@/redux/reuducer/languageSlice";
 import NoDataFound from "../../../../public/assets/no_data_found_illustrator.svg";
 import Image from "next/image";
 import SellerReviewCard from "@/components/Cards/SellerReviewCard";
-
-
+import axios from "axios";
+import SellerSlider from "./SellerSlider";
+import SellerStoreHours from "./SellerStoreHours";
+import SellerSocialLinks from "./SellerSocialLinks";
 
 
 export const SellerProfile = ({ id }) => {
-
+     
     const dispatch = useDispatch()
     const view = useSelector(ViewCategory)
     const [sortBy, setSortBy] = useState('new-to-old');
@@ -49,7 +51,22 @@ export const SellerProfile = ({ id }) => {
     const [IsLoadMoreReview, setIsLoadMoreReview] = useState(false)
     const [IsNoUserFound, setIsNoUserFound] = useState(false)
 
+    // facebook twiter insta
+        useEffect(() => {
+        fetchSeller();
+        }, []);
+        const fetchSeller = async () => {
+            try {
+                const res = await axios.get(
+                    `${process.env.NEXT_PUBLIC_API_URL}${process.env.NEXT_PUBLIC_END_POINT}get-seller?id=${id}`
+                );
 
+                setSeller(res.data.data.seller);
+            } catch (error) {
+                console.log("Error fetching seller", error);
+            }
+        };
+    // end facebook twiter insta
     const handleGridClick = (viewType) => {
         dispatch(setCategoryView(viewType))
     };
@@ -218,7 +235,15 @@ export const SellerProfile = ({ id }) => {
         )
     }
 
-    
+    return (
+        <div className="seller-profile-container">
+            <h1>{seller.name}</h1>
+
+            <SellerSlider slider={seller.slider_images} />
+            <SellerStoreHours hours={seller.store_hours} />
+            <SellerSocialLinks seller={seller} />
+        </div>
+    );    
 
     return (
 
@@ -227,6 +252,7 @@ export const SellerProfile = ({ id }) => {
 
             <div className="container topSpace_seller">
                 <div className="row">
+                    
                     <div className="col-lg-4">
                         {
                             IsSellerDataLoading ? <SellerCardSkeleton /> : <SellerCard seller={seller} ratings={ratings} />
