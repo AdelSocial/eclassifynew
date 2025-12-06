@@ -181,7 +181,6 @@
 //     </div>
 //   );
 // }
-
  'use client';
 
 import { useEffect, useState } from 'react';
@@ -200,17 +199,25 @@ export default function AnalyticsDashboard({ userId, proxy }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!userId) return; // <-- prevents infinite loading
+
     async function load() {
       try {
-        const endpoint = "listings"; // matches backend
+        const endpoint = `listings`;
+
+        // If you use proxy, call Next.js API
         const url = proxy
           ? `/api/proxy/analytics/seller/${userId}/${endpoint}`
           : `${process.env.NEXT_PUBLIC_API_URL}/api/analytics/seller/${userId}/${endpoint}`;
 
+        console.log("Fetching analytics:", url);
+
         const res = await fetch(url);
         const json = await res.json();
 
-        if (json.success) setViews(json.data);
+        if (json.success) {
+          setViews(json.data);
+        }
       } catch (e) {
         console.error("Analytics fetch failed", e);
       }
