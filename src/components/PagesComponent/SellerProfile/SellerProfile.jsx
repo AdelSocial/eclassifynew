@@ -250,7 +250,7 @@ export const SellerProfile = ({ id }) => {
                          {/* ADD HERE */}
                         <div className="seller-profile-container mb-4">
                             <h1>{seller?.name}ABC</h1>
-
+                            {/* Only render if seller exists */}
                             <SellerSlider slider={seller?.slider_images} />
                             <SellerStoreHours hours={seller?.store_hours} />
                             <SellerSocialLinks seller={seller} />
