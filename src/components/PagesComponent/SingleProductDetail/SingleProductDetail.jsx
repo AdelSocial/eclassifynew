@@ -1,6 +1,6 @@
 'use client'
 import SimilarProducts from "@/components/ProductDetails/SimilarProducts";
-import Image from "next/image";
+import Image from "next/image"; 
 import { useEffect, useRef, useState } from "react";
 import { FaArrowLeft, FaArrowRight, FaRegLightbulb } from "react-icons/fa6";
 import { Swiper, SwiperSlide } from "swiper/react";

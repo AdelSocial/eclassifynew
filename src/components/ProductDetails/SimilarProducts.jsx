@@ -10,7 +10,7 @@ import { useSelector } from 'react-redux';
 import { FreeMode } from 'swiper/modules';
 import { t, useIsRtl } from '@/utils';
 import { allItemApi } from '@/utils/api';
-
+ 
 
 const SimilarProducts = ({ productData }) => {
 
@@ -65,11 +65,11 @@ const SimilarProducts = ({ productData }) => {
     //     }
     // }, [productData?.category_id])
 
-    useEffect(() => {
-        if (productData?.id) {
-            fetchSimilarData(productData.id);
+   useEffect(() => {
+        if (productData?.slug) {
+            fetchSimilarData(productData.slug);
         }
-    }, [productData?.id]);
+    }, [productData?.slug]);
 
     const swipePrev = () => {
         swiperRef?.current?.slidePrev()
