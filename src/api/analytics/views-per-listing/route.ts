@@ -23,7 +23,8 @@ export async function GET(request: Request) {
   const userId = url.searchParams.get('userId') || '0';
   const endpoint = url.searchParams.get('endpoint') || 'views'; // 'views' or 'leads'
 
-  // Real backend endpoint:
+  // Real backend endpoint: 
+  // const BACKEND_URL = `${process.env.NEXT_PUBLIC_API_URL}/api/analytics/seller/${encodeURIComponent(userId)}/${endpoint}`;
   const BACKEND_URL = `${process.env.NEXT_PUBLIC_API_URL}/api/analytics/seller/${encodeURIComponent(userId)}/${endpoint}`;
 
   const res = await fetch(BACKEND_URL, {

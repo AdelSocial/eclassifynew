@@ -174,7 +174,7 @@ export const allItemApi = {
         //     return Api.get(`/relateditems/${id}`);
     // },
 }
- 
+
 // PACKAGE API
 
 

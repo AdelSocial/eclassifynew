@@ -12,9 +12,7 @@
 //   );
 // }
 
-'use client'; 
-
-
+ 
 import { useEffect, useState } from "react";
 import AnalyticsDashboard from "@/components/dashboard/AnalyticsDashboard";
 
