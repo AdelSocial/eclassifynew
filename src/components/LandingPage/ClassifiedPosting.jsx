@@ -85,8 +85,7 @@
 // }
 
 // export default ClassifiedPosting
-
-'use client'
+ 'use client'
 
 import Image from 'next/image'
 import img1 from '../../../public/assets/classified_Image1.svg'
@@ -100,31 +99,44 @@ import toast from 'react-hot-toast'
 
 import { verifyApi } from '@/api/verifyApi'
 import { getLimitsApi } from '@/api/getLimitsApi'
-import { useRouter } from 'next/navigation'
+import { useRouter } from 'next/router'
 
 const ClassifiedPosting = () => {
     const router = useRouter()
 
     const getLimitsData = async () => {
         try {
-            // === CHECK USER VERIFICATION STATUS ===
-            const verifyRes = await verifyApi.checkStatus() // GET /user-verification/{id}
+
+            // Get user from localStorage
+            const user = JSON.parse(localStorage.getItem("user"))
+            const userId = user?.id
+
+            if (!userId) {
+                toast.error("Please login again.")
+                return;
+            }
+
+            // ===========================
+            // 1️⃣ CHECK VERIFIED USER
+            // ===========================
+            const verifyRes = await verifyApi.checkStatus(userId)
 
             const status = verifyRes?.data?.status
 
-            if (status !== 'approved') {
-                // if rejected or pending → redirect to verification page
+            if (status !== "approved") {
                 router.push('https://www.libwana.com/user-verification')
-                return
+                return;
             }
 
-            // === APPROVED USER → CHECK LISTING LIMIT ===
+            // ===========================
+            // 2️⃣ CHECK LISTING LIMIT
+            // ===========================
             const limitRes = await getLimitsApi.getLimits({ package_type: 'item_listing' })
 
             if (limitRes?.data?.error === false) {
                 router.push('/ad-listing')
             } else {
-                toast.error(limitRes?.data?.message)
+                toast.error(t('purchasePlan'))
                 router.push('/subscription')
             }
 
@@ -133,15 +145,16 @@ const ClassifiedPosting = () => {
             toast.error("Something went wrong")
         }
     }
+
     const handleCheckLogin = (e) => {
         e.preventDefault()
-
         if (isLogin()) {
             getLimitsData()
         } else {
             toast.error(t('loginFirst'))
         }
     }
+
     return (
         <section id='classified_sec'>
             <div className="container classified_wrapper">
