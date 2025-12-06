@@ -85,7 +85,7 @@
 // }
 
 // export default ClassifiedPosting
- 'use client'
+'use client'
 
 import Image from 'next/image'
 import img1 from '../../../public/assets/classified_Image1.svg'
@@ -102,12 +102,11 @@ import { getLimitsApi } from '@/api/getLimitsApi'
 import { useRouter } from 'next/router'
 
 const ClassifiedPosting = () => {
+
     const router = useRouter()
 
     const getLimitsData = async () => {
         try {
-
-            // Get user from localStorage
             const user = JSON.parse(localStorage.getItem("user"))
             const userId = user?.id
 
@@ -116,21 +115,16 @@ const ClassifiedPosting = () => {
                 return;
             }
 
-            // ===========================
-            // 1️⃣ CHECK VERIFIED USER
-            // ===========================
+            // 1️⃣ VERIFY USER
             const verifyRes = await verifyApi.checkStatus(userId)
-
             const status = verifyRes?.data?.status
 
             if (status !== "approved") {
-                router.push('https://www.libwana.com/user-verification')
+                window.location.href = "https://www.libwana.com/user-verification"
                 return;
             }
 
-            // ===========================
-            // 2️⃣ CHECK LISTING LIMIT
-            // ===========================
+            // 2️⃣ CHECK LIMIT AFTER APPROVAL
             const limitRes = await getLimitsApi.getLimits({ package_type: 'item_listing' })
 
             if (limitRes?.data?.error === false) {
@@ -160,6 +154,7 @@ const ClassifiedPosting = () => {
             <div className="container classified_wrapper">
                 <div className="container">
                     <div className="classified_posting">
+
                         <h1 className="classified_title">
                             {t('craftEpic')}<br />{t('classifiedsPosting')}
                         </h1>
@@ -174,6 +169,7 @@ const ClassifiedPosting = () => {
                         <Image src={img2} width={230} height={275} alt='Working' className='classified_img2' onErrorCapture={placeholderImage} />
                         <Image src={img3} width={130} height={155} alt='Working' className='classified_img3' onErrorCapture={placeholderImage} />
                         <Image src={img4} width={130} height={155} alt='Working' className='classified_img4' onErrorCapture={placeholderImage} />
+
                     </div>
                 </div>
             </div>
@@ -182,3 +178,4 @@ const ClassifiedPosting = () => {
 }
 
 export default ClassifiedPosting
+
