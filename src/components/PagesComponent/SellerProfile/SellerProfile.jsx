@@ -235,15 +235,7 @@ export const SellerProfile = ({ id }) => {
         )
     }
 
-    return (
-        <div className="seller-profile-container">
-            <h1>{seller.name}</h1>
-
-            <SellerSlider slider={seller.slider_images} />
-            <SellerStoreHours hours={seller.store_hours} />
-            <SellerSocialLinks seller={seller} />
-        </div>
-    );    
+     
 
     return (
 
@@ -257,6 +249,9 @@ export const SellerProfile = ({ id }) => {
                         {
                             IsSellerDataLoading ? <SellerCardSkeleton /> : <SellerCard seller={seller} ratings={ratings} />
                         }
+                          <SellerSlider slider={seller.slider_images} />
+                        <SellerStoreHours hours={seller.store_hours} />
+                        <SellerSocialLinks seller={seller} />
                     </div>
                     <div className="col-lg-8">
                         <div className="row">
