@@ -15,24 +15,30 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve",
-     "baseUrl": ".", 
-         "paths": {
-      "@/*": ["src/*"]                         // ✅ add this line
+    "jsx": "react-jsx",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "src/*"
+      ] // ✅ add this line
     },
     "plugins": [
       {
         "name": "next"
-        
       }
-    ]
+    ],
+    "target": "ES2017"
   },
   "include": [
     "next-env.d.ts",
     ".next/types/**/*.ts",
     "**/*.ts",
-    "**/*.tsx"
-, "src/components/Live/LiveStreamUI.jsx", "src/components/MyBooking/Mybooking.jsx", "src/app/dashboard/my-bookings/page.jsx"  ],
+    "**/*.tsx",
+    "src/components/Live/LiveStreamUI.jsx",
+    "src/components/MyBooking/Mybooking.jsx",
+    "src/app/dashboard/my-bookings/page.jsx",
+    ".next/dev/types/**/*.ts"
+  ],
   "exclude": [
     "node_modules"
   ]
