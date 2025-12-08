@@ -4,7 +4,7 @@ import ChatMessages from './ChatMessages';
 
 export default function GoLiveChatWrapper({ streamId, userId }) {
   const [messages, setMessages] = useState([
-    {
+    { 
       id: 1,
       message: `Welcome to stream: ${streamId}`,
       message_type: "text",

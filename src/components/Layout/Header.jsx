@@ -574,8 +574,7 @@ const fetchSuggestionsFromAPI = debounce(async (query) => {
         <label 
           style={{ 
             position: 'absolute', 
-            right: 35, 
-            top: 10, 
+            right: 12, 
             cursor: 'pointer' 
           }}
         >

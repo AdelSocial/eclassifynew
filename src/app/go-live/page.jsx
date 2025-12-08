@@ -56,7 +56,7 @@ export default function GoLivePage() {
             </button>
           )}
         </div>
-
+  
         <div className="w-full md:w-[30%] max-h-[500px] overflow-y-auto rounded border shadow p-3 bg-white">
           <h3 className="text-lg font-semibold mb-3">💬 Live Chat</h3>
           <GoLiveChatWrapper streamId={streamId} userId={userId} />

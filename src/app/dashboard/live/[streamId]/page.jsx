@@ -7,11 +7,11 @@ export default function LiveStreamPage({ params }) {
   const videoRef = useRef(null);
   const [broadcast, setBroadcast] = useState(null);
   const [expired, setExpired] = useState(false);
-
+ 
   useEffect(() => {
     // 1) Fetch broadcast metadata by streamId
     fetch(`/api/broadcasts/${params.streamId}`)
-      .then(res => res.json())
+      .then(res => res.json()) 
       .then((data) => {
         setBroadcast(data);
         const now = new Date();
@@ -31,7 +31,7 @@ export default function LiveStreamPage({ params }) {
   }
   if (expired) {
     return <p>This promotion has ended.</p>;
-  }
+  } 
 
   return (
     <div className="p-4">
@@ -55,7 +55,7 @@ export default function LiveStreamPage({ params }) {
             </Link>
           </div>
         </div>
-
+ 
         {/* Chat */}
         <div className="w-full md:w-[30%] max-h-[500px] overflow-y-auto rounded border shadow p-3 bg-white">
           <h3 className="text-lg font-semibold mb-3">💬 Live Chat</h3>
