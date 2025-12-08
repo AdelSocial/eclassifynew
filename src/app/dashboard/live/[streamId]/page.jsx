@@ -1,67 +1,125 @@
-'use client'
-import React, { useEffect, useRef, useState } from 'react';
-import ChatMessages from '@/components/PagesComponent/Chat/ChatMessages';
-import Link from 'next/link';
+// 'use client'
+// import React, { useEffect, useRef, useState } from 'react';
+// import ChatMessages from '@/components/PagesComponent/Chat/ChatMessages';
+// import Link from 'next/link';
 
-export default function LiveStreamPage({ params }) {
-  const videoRef = useRef(null);
-  const [broadcast, setBroadcast] = useState(null);
-  const [expired, setExpired] = useState(false);
+// export default function LiveStreamPage({ params }) {
+//   const videoRef = useRef(null);
+//   const [broadcast, setBroadcast] = useState(null);
+//   const [expired, setExpired] = useState(false);
  
-  useEffect(() => {
-    // 1) Fetch broadcast metadata by streamId
-    fetch(`/api/broadcasts/${params.streamId}`)
-      .then(res => res.json()) 
-      .then((data) => {
-        setBroadcast(data);
-        const now = new Date();
-        const exp = new Date(data.expiresAt);
-        setExpired(now > exp);
+//   useEffect(() => { 
+//     // 1) Fetch broadcast metadata by streamId
+//     fetch(`/api/broadcasts/${params.streamId}`)
+//       .then(res => res.json()) 
+//       .then((data) => {
+//         setBroadcast(data);
+//         const now = new Date();
+//         const exp = new Date(data.expiresAt);
+//         setExpired(now > exp);
 
-        if (now >= new Date(data.startsAt) && now < exp) {
-          videoRef.current.src = data.videoUrl;
-          videoRef.current.play().catch(() => {});
-        }
-      })
-      .catch(console.error);
-  }, [params.streamId]);
+//         if (now >= new Date(data.startsAt) && now < exp) {
+//           videoRef.current.src = data.videoUrl;
+//           videoRef.current.play().catch(() => {});
+//         }
+//       })
+//       .catch(console.error);
+//   }, [params.streamId]);
 
-  if (!broadcast) {
-    return <p>Loading broadcast...</p>;
-  }
-  if (expired) {
-    return <p>This promotion has ended.</p>;
-  } 
+//   if (!broadcast) { 
+//     return <p>Loading broadcast...</p>;
+//   }
+//   if (expired) {
+//     return <p>This promotion has ended.</p>;
+//   } 
+
+//   return (
+//     <div className="p-4">
+//       <h2 className="text-2xl font-bold mb-4">🔴 Live Broadcasting</h2>
+
+//       <div className="flex flex-col md:flex-row gap-4">
+//         {/* Video + business overlay */}
+//         <div className="flex-1 relative">
+//           <video
+//             ref={videoRef}
+//             controls
+//             className="w-full h-auto rounded shadow border"
+//           />
+//           {/* Business info overlay */}
+//           <div className="absolute bottom-4 left-4 bg-white bg-opacity-75 p-3 rounded shadow">
+//             <h3 className="font-semibold">{broadcast.business.name}</h3>
+//             <Link href={broadcast.business.link}>
+//               <a target="_blank" className="text-blue-600 underline">
+//                 Learn more
+//               </a>
+//             </Link>
+//           </div>
+//         </div>
+ 
+//         {/* Chat */}
+//         <div className="w-full md:w-[30%] max-h-[500px] overflow-y-auto rounded border shadow p-3 bg-white">
+//           <h3 className="text-lg font-semibold mb-3">💬 Live Chat</h3>
+//           <ChatMessages streamId={params.streamId} isLive={true} />
+//         </div>
+//       </div>
+//     </div>
+//   );
+// }
+
+"use client";
+import { useState } from "react";
+
+export default function CreateLive() {
+  const [data, setData] = useState(null);
+  const [userId, setUserId] = useState(""); // user table id
+
+  const createLive = async () => {
+    if (!userId) {
+      alert("Enter valid user ID");
+      return;
+    }
+
+    const res = await fetch("https://admin.libwana.com/api/live/create", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        user_id: userId, // ONLY user_id needed
+      }),
+    });
+
+    const response = await res.json();
+    setData(response.live); // Laravel sends data inside "live"
+  };
 
   return (
-    <div className="p-4">
-      <h2 className="text-2xl font-bold mb-4">🔴 Live Broadcasting</h2>
+    <div style={{ padding: 20 }}>
+      <h2>Create Live Stream</h2>
 
-      <div className="flex flex-col md:flex-row gap-4">
-        {/* Video + business overlay */}
-        <div className="flex-1 relative">
-          <video
-            ref={videoRef}
-            controls
-            className="w-full h-auto rounded shadow border"
-          />
-          {/* Business info overlay */}
-          <div className="absolute bottom-4 left-4 bg-white bg-opacity-75 p-3 rounded shadow">
-            <h3 className="font-semibold">{broadcast.business.name}</h3>
-            <Link href={broadcast.business.link}>
-              <a target="_blank" className="text-blue-600 underline">
-                Learn more
-              </a>
-            </Link>
-          </div>
+      <input
+        type="number"
+        placeholder="Enter User ID (from users table)"
+        value={userId}
+        onChange={(e) => setUserId(e.target.value)}
+        style={{ padding: 8, marginBottom: 10, width: 250 }}
+      />
+
+      <br />
+
+      <button onClick={createLive} style={{ padding: "10px 20px" }}>
+        Start Live Stream
+      </button>
+
+      {data && (
+        <div style={{ marginTop: 20 }}>
+          <a
+            href={`/live/host?appID=${data.appID}&serverSecret=${data.serverSecret}&liveID=${data.liveID}&userID=${data.userID}&userName=${data.userName}`}
+            style={{ color: "blue", textDecoration: "underline" }}
+          >
+            Go to Host Page
+          </a>
         </div>
- 
-        {/* Chat */}
-        <div className="w-full md:w-[30%] max-h-[500px] overflow-y-auto rounded border shadow p-3 bg-white">
-          <h3 className="text-lg font-semibold mb-3">💬 Live Chat</h3>
-          <ChatMessages streamId={params.streamId} isLive={true} />
-        </div>
-      </div>
+      )}
     </div>
   );
 }
+
