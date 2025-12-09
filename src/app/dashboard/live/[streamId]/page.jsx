@@ -123,65 +123,180 @@
 //   );
 // }
 
+// "use client";
+// import { useEffect, useState } from "react";
+
+// export default function CreateLive() {
+//   const [users, setUsers] = useState([]);
+//   const [userId, setUserId] = useState("");
+//   const [data, setData] = useState(null);
+ 
+//   // Load users
+//   useEffect(() => {
+//     fetch("https://admin.libwana.com/api/zegocloudUsers")
+//       .then((res) => res.json())
+//       .then((d) => setUsers(d));
+//   }, []);
+
+//   const createLive = async () => {
+//     if (!userId) return alert("Select a user");
+
+//     const res = await fetch("https://admin.libwana.com/api/live/create", {
+//       method: "POST",
+//       headers: { "Content-Type": "application/json" },
+//       body: JSON.stringify({ user_id: userId }),
+//     });
+
+//     const response = await res.json();
+//     setData(response.live);
+//   };
+
+//   return (
+//     <div style={{ padding: 20 }}>
+//       <h2>Create Live Stream</h2>
+
+//       {/* Dropdown */}
+//       <select
+//         value={userId}
+//         onChange={(e) => setUserId(e.target.value)}
+//         style={{ padding: 8, width: 250 }}
+//       >
+//         <option value="">Select User</option>
+//         {users.map((u) => (
+//           <option key={u.id} value={u.id}>
+//             {u.id} — {u.name}
+//           </option>
+//         ))}
+//       </select>
+ 
+//       <br /><br />
+
+//       <button onClick={createLive}>Start Live Stream</button>
+
+//       {data && (
+//         <div>
+//           <a href={`/dashboard/live/host?appID=${data.appID}&serverSecret=${data.serverSecret}&liveID=${data.liveID}&userID=${data.userID}&userName=${data.userName}`}>
+//             Go to Host Page
+//           </a>
+//         </div>
+//       )}
+//     </div>
+//   );
+// }
+// pages/live/[liveId].tsx  (or app directory equivalent)
+// This example uses React + Next.js pages dir. Make sure it runs client-side only.
 "use client";
+
 import { useEffect, useState } from "react";
 
-export default function CreateLive() {
-  const [users, setUsers] = useState([]);
-  const [userId, setUserId] = useState("");
-  const [data, setData] = useState(null);
- 
-  // Load users
+export default function LivePage({ params }) {
+  const liveId = params.streamId; // from URL [...]/live/abc123
+
+  const [loading, setLoading] = useState(true);
+  const [zegodata, setZegodata] = useState(null);
+  const [error, setError] = useState(null);
+
+  // Fetch Zego token from Laravel API
   useEffect(() => {
-    fetch("https://admin.libwana.com/api/zegocloudUsers")
-      .then((res) => res.json())
-      .then((d) => setUsers(d));
-  }, []);
+    if (!liveId) return;
 
-  const createLive = async () => {
-    if (!userId) return alert("Select a user");
+    const fetchToken = async () => {
+      setLoading(true);
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/live/${liveId}/token`,
+          {
+            method: "GET",
+            credentials: "include",
+            headers: { Accept: "application/json" },
+          }
+        );
 
-    const res = await fetch("https://admin.libwana.com/api/live/create", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ user_id: userId }),
-    });
+        if (res.status === 401) {
+          setError("You must be logged in to view this stream.");
+          return;
+        }
 
-    const response = await res.json();
-    setData(response.live);
-  };
+        if (!res.ok) {
+          throw new Error("Failed to fetch streaming token.");
+        }
+
+        const data = await res.json();
+        setZegodata(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchToken();
+  }, [liveId]);
+
+  if (loading) return <div>Loading live stream…</div>;
+  if (error) return <div style={{ color: "red" }}>{error}</div>;
+  if (!zegodata?.token) return <div>Stream unavailable.</div>;
 
   return (
-    <div style={{ padding: 20 }}>
-      <h2>Create Live Stream</h2>
-
-      {/* Dropdown */}
-      <select
-        value={userId}
-        onChange={(e) => setUserId(e.target.value)}
-        style={{ padding: 8, width: 250 }}
-      >
-        <option value="">Select User</option>
-        {users.map((u) => (
-          <option key={u.id} value={u.id}>
-            {u.id} — {u.name}
-          </option>
-        ))}
-      </select>
- 
-      <br /><br />
-
-      <button onClick={createLive}>Start Live Stream</button>
-
-      {data && (
-        <div>
-          <a href={`/dashboard/live/host?appID=${data.appID}&serverSecret=${data.serverSecret}&liveID=${data.liveID}&userID=${data.userID}&userName=${data.userName}`}>
-            Go to Host Page
-          </a>
-        </div>
-      )}
+    <div style={{ width: "100%", height: "100vh" }}>
+      <ZegoPlayer zegodata={zegodata} />
     </div>
   );
 }
 
+// ===============================
+// Zego Player Component (Client Only)
+// ===============================
 
+function ZegoPlayer({ zegodata }) {
+  const { appID, token, roomID, userID, userName } = zegodata;
+
+  useEffect(() => {
+    let kitInstance = null;
+
+    const initZego = async () => {
+      // Dynamically import Zego to prevent SSR issues
+      const { ZegoUIKitPrebuilt } = await import(
+        "@zegocloud/zego-uikit-prebuilt"
+      );
+
+      kitInstance = ZegoUIKitPrebuilt.create(appID, token);
+
+      // Join Live Room
+      kitInstance.joinRoom({
+        container: document.querySelector("#zego-container"),
+        scenario: {
+          mode: ZegoUIKitPrebuilt.Live,
+        },
+        userID: String(userID),
+        userName: String(userName),
+        roomID: String(roomID),
+
+        // Auto Camera & Mic OFF for audience
+        turnOnCameraWhenJoining: false,
+        turnOnMicrophoneWhenJoining: false,
+
+        // Max 50 users
+        maxUsers: 50,
+      });
+    };
+
+    initZego();
+
+    // Cleanup on unmount
+    return () => {
+      try {
+        kitInstance?.destroy();
+      } catch (e) {
+        console.warn("Zego cleanup error", e);
+      }
+    };
+  }, [appID, token, roomID, userID, userName]);
+
+  return (
+    <div
+      id="zego-container"
+      style={{ width: "100%", height: "100%", background: "#000" }}
+    />
+  );
+}
