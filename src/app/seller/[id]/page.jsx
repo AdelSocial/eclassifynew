@@ -29,10 +29,17 @@ export const generateMetadata = async ({ params }) => {
 
 
 
-const SellerProfilePage = ({ params }) => {
+const SellerProfilePage = async ({ params }) => {
+    // Ensure params is resolved (Next.js 15+)
+    const resolvedParams = await params;
+    const sellerId = resolvedParams?.id;
+
+    if (!sellerId) {
+        return <div>Invalid seller ID</div>;
+    }
 
     return (
-        <SellerProfile id={params?.id} />
+        <SellerProfile id={sellerId} />
     )
 }
 
