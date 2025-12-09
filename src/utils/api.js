@@ -130,6 +130,7 @@ export const getVerificationFiledsApi = {
 };
 
 // // 4. ITEM API
+<<<<<<< HEAD
 // export const allItemApi = {
 //     getItems: ({
 //         id, custom_fileds, category_id, min_price, max_price, sort_by,
@@ -209,6 +210,50 @@ export const allItemApi = {
   //     return Api.get(`/relateditems/${id}`);
   // },
 };
+=======
+export const allItemApi = {
+    getItems: ({
+        id, custom_fileds, category_id, min_price, max_price, sort_by,
+        posted_since, featured_section_id, status, page, search,
+        country, state, city, slug, category_slug, featured_section_slug, area_id, latitude, longitude, radius, user_id, popular_items
+    } = {}) => {
+        return Api.get(GET_ITEM, {
+            params: {
+                id, custom_fileds, category_id, min_price, max_price, sort_by,
+                posted_since, featured_section_id, status, page, search,
+                country, state, city, slug, category_slug, featured_section_slug, area_id, latitude, longitude, radius, user_id, popular_items
+            }
+        })
+    },
+    getRelatedItems: (slug) => {
+        return Api.get(`/related-items/${slug}`);
+    },
+}
+>>>>>>> de4557a6361fa0e4a18ffe86a05aaee3577ea41f
+
+
+// export const allItemApi = {
+//     getItems: ({
+//         id, custom_fileds, category_id, min_price, max_price, sort_by,
+//         posted_since, featured_section_id, status, page, search,
+//         country, state, city, slug, category_slug, featured_section_slug,
+//         area_id, latitude, longitude, radius, user_id, popular_items
+//     } = {}) => {
+//         return Api.get(GET_ITEM, {
+//             params: {
+//                 id, custom_fileds, category_id, min_price, max_price, sort_by,
+//                 posted_since, featured_section_id, status, page, search,
+//                 country, state, city, slug, category_slug, featured_section_slug,
+//                 area_id, latitude, longitude, radius, user_id, popular_items
+//             }
+//         })
+//     },
+
+//     getRelatedItems: (slug) => {
+//         return Api.get(`/related-items/${slug}`);
+//     },
+ 
+// }
 
 // PACKAGE API
 
