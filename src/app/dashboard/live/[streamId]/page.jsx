@@ -130,7 +130,7 @@ export default function CreateLive() {
   const [users, setUsers] = useState([]);
   const [userId, setUserId] = useState("");
   const [data, setData] = useState(null);
-
+ 
   // Load users
   useEffect(() => {
     fetch("https://admin.libwana.com/api/zegocloudUsers")
@@ -168,14 +168,14 @@ export default function CreateLive() {
           </option>
         ))}
       </select>
-
+ 
       <br /><br />
 
       <button onClick={createLive}>Start Live Stream</button>
 
       {data && (
         <div>
-          <a href={`/live/host?appID=${data.appID}&serverSecret=${data.serverSecret}&liveID=${data.liveID}&userID=${data.userID}&userName=${data.userName}`}>
+          <a href={`/dashboard/live/host?appID=${data.appID}&serverSecret=${data.serverSecret}&liveID=${data.liveID}&userID=${data.userID}&userName=${data.userName}`}>
             Go to Host Page
           </a>
         </div>
