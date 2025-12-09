@@ -44,7 +44,7 @@ export default function CreateLive() {
       {data && (
         <div style={{ marginTop: 20 }}>
           <a
-            href={`/live/host?appID=${data.appID}&serverSecret=${data.serverSecret}&liveID=${data.liveID}&userID=${data.userID}&userName=${data.userName}`}
+            href={`dashboard/live/host?appID=${data.appID}&serverSecret=${data.serverSecret}&liveID=${data.liveID}&userID=${data.userID}&userName=${data.userName}`}
             style={{ color: "blue", textDecoration: "underline" }}
           >
             Go to Host Page
