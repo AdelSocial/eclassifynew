@@ -10,6 +10,7 @@ const nextConfig = {
     },
     trailingSlash: false,
     reactStrictMode: false,
+    turbopack: {},
     webpack: (config, { isServer }) => {
         if (isServer) {
             require('./scripts/sitemap-generator')

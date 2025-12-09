@@ -1,275 +1,137 @@
-// 'use client';
+"use client";
 
-// import { useState, useEffect } from 'react';
-// import {
-//   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer
-// } from 'recharts';
-
-// interface ViewStat { listing: string; views: number }
-// interface LeadStat { listing: string; leads: number }
-
-// export default function AnalyticsDashboard() {
-//   const [views, setViews] = useState<ViewStat[]>([]);
-//   const [leads, setLeads] = useState<LeadStat[]>([]);
-//   const apiBase = process.env.NEXT_PUBLIC_API_URL;
-
-//   useEffect(() => {
-//     async function fetchStats() {
-//       try {
-//         // 1) views per listing
-//        const resViews = await fetch('/api/analytics/views-per-listing');
-
-//         setViews(await resViews.json());
-
-//         // 2) leads/chats/bookings per listing
-//       const resLeads = await fetch('/api/analytics/leads-per-listing');
-//         setLeads(await resLeads.json());
-
-//       } catch (err) {
-//         console.error('Failed to load analytics', err);
-//       }
-//     }
-//     fetchStats();
-//   }, [apiBase]);
-
-//   return (
-//     <div className="space-y-8">
-//       {/* Views Chart */}
-//       <div>
-//         <h2 className="text-xl font-semibold mb-2">Views per Listing</h2>
-//         <ResponsiveContainer width="100%" height={300}>
-//           <BarChart data={views}>
-//             <XAxis dataKey="listing" />
-//             <YAxis />
-//             <Tooltip />
-//             <Bar dataKey="views" />
-//           </BarChart>
-//         </ResponsiveContainer>
-//       </div>
-
-//       {/* Leads Chart */}
-//       <div>
-//         <h2 className="text-xl font-semibold mb-2">Leads / Chats / Bookings per Listing</h2>
-//         <ResponsiveContainer width="100%" height={300}>
-//           <BarChart data={leads}>
-//             <XAxis dataKey="listing" />
-//             <YAxis />
-//             <Tooltip />
-//             <Bar dataKey="leads" />
-//           </BarChart>
-//         </ResponsiveContainer>
-//       </div>
-//     </div>
-//   );
-// }
-
- 
-// 'use client';
-
-// import {
-//   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
-//   PieChart, Pie, Cell, Legend
-// } from 'recharts';
-// import { Card, Row, Col, Typography, Divider } from 'antd';
-
-// const { Title } = Typography;
-
-// interface ViewStat { listing: string; views: number }
-// interface LeadStat { listing: string; leads: number }
-
-// const fakeViews: ViewStat[] = [
-//   { listing: 'Listing A', views: 120 },
-//   { listing: 'Listing B', views: 80 },
-//   { listing: 'Listing C', views: 150 },
-// ];
-
-// const fakeLeads: LeadStat[] = [
-//   { listing: 'Listing A', leads: 10 },
-//   { listing: 'Listing B', leads: 5 },
-//   { listing: 'Listing C', leads: 20 },
-// ];
-
-// const COLORS = ['#8884d8', '#82ca9d', '#ffc658'];
-
-// export default function AnalyticsDashboard() {
-//   const views = fakeViews;
-//   const leads = fakeLeads;
-
-//   return (
-//     <div className="space-y-12">
-//       {/* Views Charts */}
-//       <Card
-//         title={<Title level={4} style={{ margin: 0 }}>Views per Listing</Title>}
-//         bordered={false}
-//         style={{ marginBottom: 32, boxShadow: '0 2px 8px #f0f1f2' }}
-//       >
-//         <Row gutter={[32, 32]}>
-//           <Col xs={24} md={12}>
-//             <ResponsiveContainer width="100%" height={300}>
-//               <BarChart data={views}>
-//                 <XAxis dataKey="listing" />
-//                 <YAxis />
-//                 <Tooltip />
-//                 <Bar dataKey="views" fill="#8884d8" />
-//               </BarChart>
-//             </ResponsiveContainer>
-//           </Col>
-//           <Col xs={24} md={12}>
-//             <ResponsiveContainer width="100%" height={300}>
-//               <PieChart>
-//                 <Pie
-//                   data={views}
-//                   dataKey="views"
-//                   nameKey="listing"
-//                   cx="50%"
-//                   cy="50%"
-//                   outerRadius={100}
-//                   label
-//                 >
-//                   {views.map((entry, index) => (
-//                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-//                   ))}
-//                 </Pie>
-//                 <Legend />
-//                 <Tooltip />
-//               </PieChart>
-//             </ResponsiveContainer>
-//           </Col>
-//         </Row>
-//       </Card>
-
-//       {/* Leads Charts */}
-//       <Card
-//         title={<Title level={4} style={{ margin: 0 }}>Leads / Chats / Bookings per Listing</Title>}
-//         bordered={false}
-//         style={{ boxShadow: '0 2px 8px #f0f1f2' }}
-//       >
-//         <Row gutter={[32, 32]}>
-//           <Col xs={24} md={12}>
-//             <ResponsiveContainer width="100%" height={300}>
-//               <BarChart data={leads}>
-//                 <XAxis dataKey="listing" />
-//                 <YAxis />
-//                 <Tooltip />
-//                 <Bar dataKey="leads" fill="#82ca9d" />
-//               </BarChart>
-//             </ResponsiveContainer>
-//           </Col>
-//           <Col xs={24} md={12}>
-//             <ResponsiveContainer width="100%" height={300}>
-//               <PieChart>
-//                 <Pie
-//                   data={leads}
-//                   dataKey="leads"
-//                   nameKey="listing"
-//                   cx="50%"
-//                   cy="50%"
-//                   outerRadius={100}
-//                   label
-//                 >
-//                   {leads.map((entry, index) => (
-//                     <Cell key={`cell-lead-${index}`} fill={COLORS[index % COLORS.length]} />
-//                   ))}
-//                 </Pie>
-//                 <Legend />
-//                 <Tooltip />
-//               </PieChart>
-//             </ResponsiveContainer>
-//           </Col>
-//         </Row>
-//       </Card>
-//     </div>
-//   );
-// }
- 'use client';
-
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import {
-  BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
-  PieChart, Pie, Cell, Legend
-} from 'recharts';
-import { Card, Row, Col, Typography } from 'antd';
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
+  Legend,
+} from "recharts";
+import { Card, Row, Col, Typography } from "antd";
+import { analyticsApi } from "@/utils/api";
+import { userSignUpData } from "@/redux/reuducer/authSlice";
 
 const { Title } = Typography;
 
-const COLORS = ['#8884d8', '#82ca9d', '#ffc658'];
+const COLORS = ["#8884d8", "#82ca9d", "#ffc658"];
 
-export default function AnalyticsDashboard({ userId, proxy }) {
+export default function AnalyticsDashboard() {
+  const UserData = useSelector(userSignUpData);
+  const userId = UserData?.id;
   const [views, setViews] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!userId) return; // <-- prevents infinite loading
-
-    async function load() {
-      try {
-        const endpoint = `listings`;
-
-        // If you use proxy, call Next.js API
-        const url = proxy
-          ? `/api/proxy/analytics/seller/${userId}/${endpoint}`
-          : `${process.env.NEXT_PUBLIC_API_URL}/api/analytics/seller/${userId}/${endpoint}`;
-
-        console.log("Fetching analytics:", url);
-
-        const res = await fetch(url);
-        const json = await res.json();
-
-        if (json.success) {
-          setViews(json.data);
-        }
-      } catch (e) {
-        console.error("Analytics fetch failed", e);
-      }
-
+    if (!userId) {
       setLoading(false);
+      return;
     }
 
-    load();
+    async function loadAnalytics() {
+      try {
+        const response = await analyticsApi.getSellerViews({
+          seller_id: userId,
+        });
+
+        // Handle the response - it's an array directly
+        if (response?.data) {
+          // Check if response.data is an array or wrapped in data property
+          const data = Array.isArray(response.data)
+            ? response.data
+            : response.data?.data || response.data;
+
+          if (Array.isArray(data) && data.length > 0) {
+            // Convert views from string to number for charts
+            const formattedData = data.map((item) => ({
+              ...item,
+              views: parseInt(item.views) || 0,
+            }));
+            setViews(formattedData);
+          }
+        }
+      } catch (error) {
+        console.error("Analytics fetch failed", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadAnalytics();
   }, [userId]);
 
-  if (loading) return <div>Loading analytics...</div>;
+  if (loading) {
+    return <div>Loading analytics...</div>;
+  }
+
+  if (!userId) {
+    return <div>Please log in to view analytics.</div>;
+  }
 
   return (
     <div className="space-y-12">
-      <Card
-        title={<Title level={4}>Views per Listing</Title>}
-        bordered={false}
-      >
-        <Row gutter={[32, 32]}>
-          <Col xs={24} md={12}>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={views}>
-                <XAxis dataKey="listing" />
-                <YAxis />
-                <Tooltip />
-                <Bar dataKey="views" fill="#8884d8" />
-              </BarChart>
-            </ResponsiveContainer>
-          </Col>
+      <Card title={<Title level={4}>Views per Listing</Title>} bordered={false}>
+        {views && views.length > 0 ? (
+          <Row gutter={[32, 32]}>
+            <Col xs={24} md={12}>
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={views}>
+                  <XAxis
+                    dataKey="listing"
+                    angle={-45}
+                    textAnchor="end"
+                    height={100}
+                  />
+                  <YAxis />
+                  <Tooltip
+                    formatter={(value) => [`${value} views`, "Views"]}
+                    labelFormatter={(label) => `Listing: ${label}`}
+                  />
+                  <Bar dataKey="views" fill="#8884d8" />
+                </BarChart>
+              </ResponsiveContainer>
+            </Col>
 
-          <Col xs={24} md={12}>
-            <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Pie
-                  data={views}
-                  dataKey="views"
-                  nameKey="listing"
-                  cx="50%"
-                  cy="50%"
-                  outerRadius={100}
-                  label
-                >
-                  {views.map((entry, index) => (
-                    <Cell key={index} fill={COLORS[index % COLORS.length]} />
-                  ))}
-                </Pie>
-                <Legend />
-                <Tooltip />
-              </PieChart>
-            </ResponsiveContainer>
-          </Col>
-        </Row>
+            <Col xs={24} md={12}>
+              <ResponsiveContainer width="100%" height={300}>
+                <PieChart>
+                  <Pie
+                    data={views}
+                    dataKey="views"
+                    nameKey="listing"
+                    cx="50%"
+                    cy="50%"
+                    outerRadius={100}
+                    label={(entry: any) => `${entry.listing}: ${entry.views}`}
+                  >
+                    {views.map((entry, index) => (
+                      <Cell
+                        key={`cell-${entry.id || index}`}
+                        fill={COLORS[index % COLORS.length]}
+                      />
+                    ))}
+                  </Pie>
+                  <Legend
+                    formatter={(value: string, entry: any) =>
+                      `${value}: ${entry.payload?.views || 0} views`
+                    }
+                  />
+                  <Tooltip
+                    formatter={(value: any) => [`${value} views`, "Views"]}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+            </Col>
+          </Row>
+        ) : (
+          <div>No analytics data available.</div>
+        )}
       </Card>
     </div>
   );

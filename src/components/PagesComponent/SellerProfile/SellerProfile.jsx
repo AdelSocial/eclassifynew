@@ -52,20 +52,23 @@ export const SellerProfile = ({ id }) => {
     const [IsNoUserFound, setIsNoUserFound] = useState(false)
 
     // facebook twiter insta
-        useEffect(() => {
-        fetchSeller();
-        }, []);
-        const fetchSeller = async () => {
-            try {
-                const res = await axios.get(
-                    `${process.env.NEXT_PUBLIC_API_URL}${process.env.NEXT_PUBLIC_END_POINT}get-seller?id=${id}`
-                );
-
+    useEffect(() => {
+        if (id) {
+            fetchSeller();
+        }
+    }, [id]);
+    
+    const fetchSeller = async () => {
+        if (!id) return;
+        try {
+            const res = await getSellerApi.getSeller({ id: Number(id), page: 1 });
+            if (res?.data?.data?.seller) {
                 setSeller(res.data.data.seller);
-            } catch (error) {
-                console.log("Error fetching seller", error);
             }
-        };
+        } catch (error) {
+            console.log("Error fetching seller", error);
+        }
+    };
     // end facebook twiter insta
     const handleGridClick = (viewType) => {
         dispatch(setCategoryView(viewType))
@@ -88,13 +91,19 @@ export const SellerProfile = ({ id }) => {
     }
 
     const getSeller = async (page) => {
+        if (!id) return;
 
         if (page === 1) {
             setIsSellerDataLoading(true)
         }
 
         try {
-            const res = await getSellerApi.getSeller({ id: Number(id), page })
+            const sellerId = Number(id);
+            if (isNaN(sellerId)) {
+                console.error("Invalid seller ID:", id);
+                return;
+            }
+            const res = await getSellerApi.getSeller({ id: sellerId, page })
             // setSellerData(res?.data?.data)
 
             if (res?.data.error && res?.data?.code === 103) {
@@ -126,17 +135,24 @@ export const SellerProfile = ({ id }) => {
 
 
     useEffect(() => {
-
-        getSeller(ReviewCurrentPage)
-
-    }, [])
+        if (id) {
+            getSeller(ReviewCurrentPage);
+        }
+    }, [id])
 
     const getSellerItems = async (page) => {
+        if (!id) return;
+        
         try {
             if (page === 1) {
                 setIsSellerItemsLoading(true)
             }
-            const res = await allItemApi.getItems({ user_id: id, sort_by: sortBy, page })
+            const sellerId = Number(id);
+            if (isNaN(sellerId)) {
+                console.error("Invalid seller ID:", id);
+                return;
+            }
+            const res = await allItemApi.getItems({ user_id: sellerId, sort_by: sortBy, page })
             if (page > 1) {
                 // Append new data to existing sellerItems
                 setSellerItems(prevItems => [...prevItems, ...res?.data?.data?.data]);
@@ -158,8 +174,10 @@ export const SellerProfile = ({ id }) => {
     }
 
     useEffect(() => {
-        getSellerItems()
-    }, [sortBy])
+        if (id) {
+            getSellerItems(1);
+        }
+    }, [sortBy, id])
 
     const handleLike = (id) => {
         const updatedItems = SellerItems.map((item) => {
